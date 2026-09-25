@@ -4,12 +4,12 @@
 # ╔══════════════════════════════════════════════════════╗
 # ║  CARA PAKAI:                                         ║
 # ║  1. Upload repo ini ke GitHub (Public)               ║
-# ║  2. Ganti GANTI_USERNAME di bawah → username kamu   ║
+# ║  2. Username GitHub: SkyRODOK   ║
 # ║  3. Jalankan di VPS sebagai root:                    ║
 # ║                                                      ║
 # ║  bash <(curl -fsSL \                                 ║
 # ║    https://raw.githubusercontent.com/\               ║
-# ║    GANTI_USERNAME/skyzz-ocean-theme/main/install.sh) ║
+# ║    SkyRODOK/skyzz-ocean-theme/main/install.sh) ║
 # ║                                                      ║
 # ║  Non-interaktif: tambah "install" atau "uninstall"   ║
 # ║  Panel lain: PANEL_DIR=/path bash <(curl ...) install║
@@ -17,7 +17,7 @@
 set -Eeuo pipefail
 
 # ══ EDIT BARIS INI ══════════════════════════════════════
-SKYZZ_REPO="${SKYZZ_REPO:-GANTI_USERNAME/skyzz-ocean-theme}"
+SKYZZ_REPO="${SKYZZ_REPO:-SkyRODOK/skyzz-ocean-theme}"
 SKYZZ_BRANCH="${SKYZZ_BRANCH:-main}"
 # ════════════════════════════════════════════════════════
 
