@@ -130,9 +130,13 @@ cfg() {
   ' "$THEME_DIR/theme.config.json" "$1"
 }
 
+ROLLBACK_RAN=0
 rollback() {
   trap - ERR
+  [ "$ROLLBACK_RAN" = 1 ] && exit 1   # jaga-jaga agar tidak double-print
+  ROLLBACK_RAN=1
   printf '\033[31m[skyzz] Gagal. Mengembalikan kondisi semula...\033[0m\n' >&2
+  printf '\033[31m[skyzz] Perintah yang gagal: %s (baris ~%s)\033[0m\n' "$BASH_COMMAND" "$LINENO" >&2
   if [ "$STARTED" = 1 ] && [ -d "$BK_ORIG" ]; then
     for f in "$WRAPPER" "$ADMIN"; do
       [ -f "$BK_ORIG/$f" ] && cp -a "$BK_ORIG/$f" "$PANEL_DIR/$f"
@@ -277,11 +281,19 @@ do_install() {
 
   # Pasang aset
   log "Memasang aset tema..."
-  mkdir -p "$PANEL_DIR/public/skyzz" "$PANEL_DIR/resources/views/skyzz"
-  cp -a "$THEME_DIR"/assets/. "$PANEL_DIR/public/skyzz/"
+  local ERR_MSG
+  ERR_MSG="$(mkdir -p "$PANEL_DIR/public/skyzz" "$PANEL_DIR/resources/views/skyzz" 2>&1)" \
+    || die "Gagal membuat folder public/skyzz atau resources/views/skyzz. Detail: $ERR_MSG"
+
+  [ -d "$THEME_DIR/assets" ] \
+    || die "Folder assets/ tidak ditemukan di tema (THEME_DIR=$THEME_DIR) — repo/download tidak lengkap."
+
+  ERR_MSG="$(cp -a "$THEME_DIR"/assets/. "$PANEL_DIR/public/skyzz/" 2>&1)" \
+    || die "Gagal menyalin aset tema ke public/skyzz. Detail: $ERR_MSG"
+  ok "Aset tema tersalin ke public/skyzz"
 
   # vars.css — override CSS variable dari config
-  cat > "$PANEL_DIR/public/skyzz/vars.css" <<CSS
+  { cat > "$PANEL_DIR/public/skyzz/vars.css" <<CSS
 /* Auto-generated oleh install.sh — jangan edit manual */
 :root {
   --sz-primary:   $PRIMARY;
@@ -290,9 +302,10 @@ do_install() {
 }
 img[src*="pterodactyl.svg"] { content: url($LOGO); }
 CSS
+  } 2>/tmp/skyzz-vars-err || die "Gagal menulis public/skyzz/vars.css. Detail: $(cat /tmp/skyzz-vars-err 2>/dev/null)"
 
   # head.blade.php
-  cat > "$PANEL_DIR/resources/views/skyzz/head.blade.php" <<BLADE
+  { cat > "$PANEL_DIR/resources/views/skyzz/head.blade.php" <<BLADE
 {{-- SkyZzPANEL Ocean Theme — auto-generated, jangan edit manual --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
@@ -311,26 +324,32 @@ window.SKYZZ = $BRAND;
 </script>
 <script defer src="/skyzz/skyzz.js?v={{ filemtime(public_path('skyzz/skyzz.js')) }}"></script>
 BLADE
+  } 2>/tmp/skyzz-head-err || die "Gagal menulis resources/views/skyzz/head.blade.php. Detail: $(cat /tmp/skyzz-head-err 2>/dev/null)"
+  rm -f /tmp/skyzz-vars-err /tmp/skyzz-head-err
+  ok "File konfigurasi tema (vars.css, head.blade.php) berhasil ditulis"
 
   # Sisipkan @include ke wrapper & admin
   for f in "$WRAPPER" "$ADMIN"; do
     if ! grep -qF "$INCLUDE" "$PANEL_DIR/$f"; then
-      sed -i "0,/<\/head>/s##    $INCLUDE\n</head>#" "$PANEL_DIR/$f"
+      ERR_MSG="$(sed -i "0,/<\/head>/s##    $INCLUDE\n</head>#" "$PANEL_DIR/$f" 2>&1)" \
+        || die "Gagal menyisipkan include ke $f. Detail: $ERR_MSG"
     fi
   done
 
-  # Fix ownership
-  chown -R "$(stat -c '%U:%G' "$PANEL_DIR/artisan")" \
+  # Fix ownership (tidak fatal jika gagal — cuma warning, bukan alasan rollback total)
+  ERR_MSG="$(chown -R "$(stat -c '%U:%G' "$PANEL_DIR/artisan")" \
     "$PANEL_DIR/public/skyzz" \
-    "$PANEL_DIR/resources/views/skyzz"
+    "$PANEL_DIR/resources/views/skyzz" 2>&1)" \
+    || warn "Gagal set ownership (dilanjutkan): $ERR_MSG"
 
   # Simpan penanda versi tema yang terpasang (dipakai uninstall agar tidak bentrok)
-  echo "1.4.2|$VER|$(date +%s)" > "$PANEL_DIR/storage/skyzz-backup/installed-version"
+  echo "1.4.2|$VER|$(date +%s)" > "$PANEL_DIR/storage/skyzz-backup/installed-version" 2>/dev/null || true
 
   # Clear cache — penting jika sebelumnya ada tema/versi lain agar tidak bentrok
-  (cd "$PANEL_DIR" && "$PHP_BIN" artisan view:clear >/dev/null)
+  ERR_MSG="$(cd "$PANEL_DIR" && "$PHP_BIN" artisan view:clear 2>&1)" \
+    || die "Gagal artisan view:clear. Detail: $ERR_MSG"
   (cd "$PANEL_DIR" && "$PHP_BIN" artisan config:clear >/dev/null 2>&1) || true
-  (cd "$PANEL_DIR" && "$PHP_BIN" artisan cache:clear >/dev/null 2>&1) || true
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan cache:clear  >/dev/null 2>&1) || true
 
   # Verifikasi
   grep -qF "$INCLUDE"                    "$PANEL_DIR/$WRAPPER" || die "Verifikasi gagal: include tidak terpasang di $WRAPPER"
