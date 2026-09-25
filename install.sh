@@ -345,9 +345,11 @@ BLADE
   # Simpan penanda versi tema yang terpasang (dipakai uninstall agar tidak bentrok)
   echo "1.4.2|$VER|$(date +%s)" > "$PANEL_DIR/storage/skyzz-backup/installed-version" 2>/dev/null || true
 
-  # Clear cache — penting jika sebelumnya ada tema/versi lain agar tidak bentrok
+  # Clear cache — penting jika sebelumnya ada tema/versi lain agar tidak bentrok.
+  # TIDAK fatal: cache-clear gagal (mis. mbstring PHP rusak) bukan alasan untuk
+  # rollback instalasi yang sudah berhasil menyalin aset & menyisip include.
   ERR_MSG="$(cd "$PANEL_DIR" && "$PHP_BIN" artisan view:clear 2>&1)" \
-    || die "Gagal artisan view:clear. Detail: $ERR_MSG"
+    || warn "artisan view:clear gagal (instalasi TETAP dilanjutkan). Detail: $ERR_MSG"
   (cd "$PANEL_DIR" && "$PHP_BIN" artisan config:clear >/dev/null 2>&1) || true
   (cd "$PANEL_DIR" && "$PHP_BIN" artisan cache:clear  >/dev/null 2>&1) || true
 
@@ -356,7 +358,8 @@ BLADE
   grep -qF "$INCLUDE"                    "$PANEL_DIR/$ADMIN"   || die "Verifikasi gagal: include tidak terpasang di $ADMIN"
   [ -s "$PANEL_DIR/public/skyzz/ocean.css" ]                   || die "Verifikasi gagal: ocean.css kosong"
   [ -s "$PANEL_DIR/public/skyzz/skyzz.js" ]                    || die "Verifikasi gagal: skyzz.js kosong"
-  (cd "$PANEL_DIR" && "$PHP_BIN" artisan --version >/dev/null)
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan --version >/dev/null 2>&1) \
+    || warn "artisan --version gagal dijalankan (kemungkinan masalah PHP di panel, bukan tema) — verifikasi file tema tetap lolos."
 
   trap - ERR
   local DOMAIN_HINT
