@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220"><g stroke-linecap="round" fill="none">
+<path d="M60 220V120M60 150c-16-14-24-30-22-50M60 130c14-10 24-26 24-44" stroke="#ff5fa2" stroke-width="12"/>
+<path d="M110 220V90M110 130c-16-12-22-28-20-48M110 110c18-10 28-28 28-50" stroke="#a855f7" stroke-width="14"/>
+<path d="M156 220V150M156 170c-10-10-14-22-12-34M156 160c12-8 18-20 18-34" stroke="#ff9f43" stroke-width="10"/></g>
+<g fill="#ffd1e6"><circle cx="38" cy="98" r="6"/><circle cx="84" cy="84" r="6"/><circle cx="90" cy="80" r="5" fill="#e9d5ff"/><circle cx="138" cy="58" r="7" fill="#e9d5ff"/><circle cx="144" cy="134" r="5" fill="#ffe0b8"/><circle cx="174" cy="124" r="5" fill="#ffe0b8"/></g>
+<path d="M0 220c20-30 50-30 70-12 20-26 60-26 80-4 16-12 36-8 50 16z" fill="#0a5d8f"/></svg>

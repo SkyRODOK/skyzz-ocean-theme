@@ -1,0 +1,2364 @@
+/* SkyZzPANEL — Ocean Cartoon Theme v1.2.0 (CSS layer; tidak menyentuh React/WebSocket) */
+
+/* ═══════════════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════════════ */
+:root {
+  --sz-primary:   #1e90ff;
+  --sz-secondary: #22d3ee;
+  --sz-accent:    #f97316;
+  --sz-green:     #22c55e;
+  --sz-red:       #ef4444;
+  --sz-purple:    #a855f7;
+
+  --sz-deep:      #020e1a;
+  --sz-deep-2:    #031525;
+  --sz-mid:       #052240;
+  --sz-surface:   #083155;
+  --sz-surface-2: #0c3d68;
+  --sz-surface-3: #0f4880;
+  --sz-glass:     rgba(8, 49, 85, 0.72);
+  --sz-glass-2:   rgba(12, 61, 104, 0.55);
+
+  --sz-text:      #e8f8ff;
+  --sz-text-2:    #c5e8f5;
+  --sz-muted:     #7fb5d5;
+  --sz-muted-2:   #4e8aab;
+
+  --sz-border:    rgba(34, 211, 238, 0.16);
+  --sz-border-2:  rgba(34, 211, 238, 0.30);
+  --sz-radius:    16px;
+  --sz-radius-lg: 20px;
+  --sz-radius-xl: 24px;
+
+  --sz-glow:      0 0 28px rgba(34, 211, 238, 0.12);
+  --sz-glow-lg:   0 0 48px rgba(34, 211, 238, 0.20);
+  --sz-shadow:    0 8px 32px rgba(0, 0, 0, 0.40);
+  --sz-shadow-lg: 0 16px 56px rgba(0, 0, 0, 0.55);
+
+  --sz-nav-h:     64px;
+  --sz-sidebar-w: 220px;
+}
+
+/* ═══════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════ */
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  font-family: "Nunito", "Poppins", "Segoe UI", system-ui, sans-serif !important;
+  color: var(--sz-text) !important;
+  background:
+    radial-gradient(ellipse 1200px 600px at 90% -5%,  rgba(34,211,238,.16), transparent 55%),
+    radial-gradient(ellipse  800px 500px at -5% 80%,  rgba(30,144,255,.12), transparent 55%),
+    linear-gradient(180deg, var(--sz-mid) 0%, var(--sz-deep) 100%) fixed !important;
+  overflow-x: hidden;
+}
+
+#app { position: relative; z-index: 1; }
+
+::selection { background: var(--sz-secondary); color: var(--sz-deep); }
+
+* { scrollbar-width: thin; scrollbar-color: var(--sz-primary) transparent; }
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--sz-primary); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sz-secondary); }
+
+:focus-visible { outline: 2px solid var(--sz-secondary); outline-offset: 2px; }
+
+/* ═══════════════════════════════════════════════════
+   DEKORASI LAUT (hanya transform/opacity)
+   ═══════════════════════════════════════════════════ */
+body::before { /* gelembung naik */
+  content: "";
+  position: fixed; left: 0; right: 0; top: 0; height: 200vh;
+  z-index: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle at  8% 90%, rgba(255,255,255,.22) 0 4px, transparent 5px),
+    radial-gradient(circle at 22% 72%, rgba(255,255,255,.15) 0 6px, transparent 7px),
+    radial-gradient(circle at 38% 55%, rgba(255,255,255,.10) 0 3px, transparent 4px),
+    radial-gradient(circle at 55% 95%, rgba(255,255,255,.18) 0 5px, transparent 6px),
+    radial-gradient(circle at 68% 65%, rgba(255,255,255,.13) 0 7px, transparent 8px),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,.20) 0 4px, transparent 5px),
+    radial-gradient(circle at 92% 48%, rgba(255,255,255,.12) 0 6px, transparent 7px),
+    radial-gradient(circle at 14% 35%, rgba(34,211,238,.18)  0 3px, transparent 4px),
+    radial-gradient(circle at 46% 20%, rgba(34,211,238,.10)  0 5px, transparent 6px),
+    radial-gradient(circle at 75% 30%, rgba(34,211,238,.14)  0 4px, transparent 5px);
+  background-size: 100% 50vh;
+  background-repeat: repeat-y;
+  animation: sz-rise 50s linear infinite;
+  will-change: transform;
+}
+
+body::after { /* ikan berenang */
+  content: "";
+  position: fixed; left: 0; top: 40%; width: 90px; height: 50px;
+  z-index: 0; pointer-events: none;
+  background: url(/skyzz/fish.svg) no-repeat center / contain;
+  opacity: .40;
+  animation: sz-swim 80s linear infinite;
+  will-change: transform;
+}
+
+html::before { /* ubur-ubur melayang */
+  content: "";
+  position: fixed; right: 4vw; top: 16vh; width: 72px; height: 108px;
+  z-index: 0; pointer-events: none;
+  background: url(/skyzz/jellyfish.svg) no-repeat center / contain;
+  opacity: .28;
+  animation: sz-bob 10s ease-in-out infinite;
+}
+
+html::after { /* ombak bawah */
+  content: "";
+  position: fixed; left: 0; bottom: 0; width: 100%; height: 80px;
+  z-index: 0; pointer-events: none;
+  background: url(/skyzz/wave.svg) repeat-x 0 100% / 1400px 80px;
+  opacity: .14;
+  animation: sz-wave 35s linear infinite;
+}
+
+@keyframes sz-rise { to { transform: translateY(-50vh); } }
+@keyframes sz-swim { from { transform: translateX(-120px) scaleX(1); } to { transform: translateX(calc(100vw + 120px)) scaleX(1); } }
+@keyframes sz-bob  { 50% { transform: translateY(-20px); } }
+@keyframes sz-wave { to { background-position: -1400px 100%; } }
+@keyframes sz-pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(34,211,238,.0); } 50% { box-shadow: 0 0 20px 4px rgba(34,211,238,.28); } }
+@keyframes sz-spin-slow { to { transform: rotate(360deg); } }
+@keyframes sz-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes sz-badge-pop { 0% { transform: scale(.8); opacity:0; } 100% { transform: scale(1); opacity:1; } }
+
+/* Toggle sakelar */
+html[data-skyzz-bubbles="off"]   body::before { display: none; }
+html[data-skyzz-creatures="off"] body::after,
+html[data-skyzz-creatures="off"] html::before { display: none; }
+html[data-skyzz-ocean="off"]     html::after  { display: none; }
+html[data-skyzz-anim="off"] *,
+html[data-skyzz-anim="off"] body::before, html[data-skyzz-anim="off"] body::after,
+html[data-skyzz-anim="off"] html::before, html[data-skyzz-anim="off"] html::after {
+  animation: none !important; transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after, html::before, html::after { animation: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   PERMUKAAN / KARTU (Tailwind Pterodactyl 1.x)
+   ═══════════════════════════════════════════════════ */
+.bg-gray-900 { background-color: rgba(2, 14, 26, .92) !important; }
+.bg-gray-800 { background-color: rgba(5, 34, 64, .88) !important; }
+.bg-gray-700 {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: var(--sz-radius) !important;
+  box-shadow: var(--sz-shadow), var(--sz-glow) !important;
+  backdrop-filter: blur(10px);
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.bg-gray-700:hover { border-color: var(--sz-border-2) !important; box-shadow: var(--sz-shadow), var(--sz-glow-lg) !important; }
+.bg-gray-600 { background-color: rgba(11, 55, 92, .80) !important; }
+.bg-gray-500 { background-color: rgba(18, 72, 118, .85) !important; }
+.bg-gray-400 { background-color: rgba(30, 90, 140, .85) !important; }
+
+.border-gray-500, .border-gray-600, .border-gray-700 { border-color: var(--sz-border) !important; }
+
+.text-gray-50, .text-gray-100, .text-gray-200 { color: var(--sz-text)   !important; }
+.text-gray-300, .text-gray-400                 { color: var(--sz-muted)  !important; }
+.text-gray-500                                 { color: var(--sz-muted-2) !important; }
+
+a.bg-gray-700:hover { transform: translateY(-3px); }
+
+/* ═══════════════════════════════════════════════════
+   NAVIGASI TOP / SIDEBAR
+   ═══════════════════════════════════════════════════ */
+.bg-gray-900.shadow-md, nav.bg-gray-900 {
+  background: linear-gradient(90deg, rgba(2,14,26,.97), rgba(5,34,64,.94)) !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+  backdrop-filter: blur(12px);
+  border-radius: 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,.45) !important;
+}
+
+/* Logo replacement */
+img[src*="pterodactyl.svg"] { content: url(/skyzz/logo.svg); max-height: 52px; width: auto; }
+
+/* Nav links */
+nav a, .bg-gray-900 a {
+  transition: color .15s, background .15s;
+  border-radius: 10px;
+}
+a[class*="active"], a.active {
+  color: var(--sz-secondary) !important;
+  background: rgba(34,211,238,.10) !important;
+  box-shadow: none !important;
+}
+
+/* Sidebar kiri (jika panel pakai layout sidebar) */
+[class*="Sidebar"], [class*="sidebar"], aside.bg-gray-800 {
+  background: linear-gradient(180deg, rgba(2,14,26,.98), rgba(5,34,64,.95)) !important;
+  border-right: 1px solid var(--sz-border) !important;
+  backdrop-filter: blur(12px);
+}
+[class*="Sidebar"] a, [class*="sidebar"] a, aside a {
+  border-radius: 12px !important;
+  margin: 2px 8px !important;
+  padding: 10px 14px !important;
+  transition: background .15s, color .15s, transform .1s !important;
+  font-weight: 600;
+  font-size: 14px;
+}
+[class*="Sidebar"] a:hover, [class*="sidebar"] a:hover, aside a:hover {
+  background: rgba(34,211,238,.12) !important;
+  color: var(--sz-secondary) !important;
+  transform: translateX(3px);
+}
+[class*="Sidebar"] a[class*="active"], [class*="sidebar"] a[class*="active"], aside a.active {
+  background: linear-gradient(90deg, rgba(34,211,238,.18), rgba(30,144,255,.12)) !important;
+  color: var(--sz-secondary) !important;
+  border-left: 3px solid var(--sz-secondary) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   TOMBOL & FORM
+   ═══════════════════════════════════════════════════ */
+.bg-primary-500, .bg-primary-600, .bg-blue-500, .bg-blue-600 {
+  background: linear-gradient(135deg, var(--sz-secondary), var(--sz-primary)) !important;
+  color: #021525 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: .3px;
+  transition: transform .15s, box-shadow .15s !important;
+  box-shadow: 0 4px 14px rgba(30,144,255,.35) !important;
+}
+.bg-primary-500:hover, .bg-primary-600:hover, .bg-blue-500:hover, .bg-blue-600:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 22px rgba(34,211,238,.50) !important;
+}
+.bg-primary-500:active, .bg-primary-600:active {
+  transform: translateY(0) !important;
+}
+
+.text-primary-400, .text-primary-500 { color: var(--sz-secondary) !important; }
+.border-primary-400, .border-primary-500 { border-color: var(--sz-secondary) !important; }
+
+.bg-green-500, .bg-green-600 {
+  background: linear-gradient(135deg, #34d399, var(--sz-green)) !important;
+  border-radius: 12px !important; border: none !important;
+  box-shadow: 0 4px 14px rgba(34,197,94,.30) !important;
+}
+.bg-red-500, .bg-red-600 {
+  background: linear-gradient(135deg, #f87171, var(--sz-red)) !important;
+  border-radius: 12px !important; border: none !important;
+  box-shadow: 0 4px 14px rgba(239,68,68,.30) !important;
+}
+.bg-yellow-500, .bg-yellow-600 {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+  border-radius: 12px !important; border: none !important;
+}
+
+button { transition: transform .15s, box-shadow .15s, background-color .15s !important; }
+button:not(:disabled):hover { transform: translateY(-1px); }
+
+input, select, textarea {
+  background: rgba(2,14,26,.75) !important;
+  color: var(--sz-text) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--sz-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,.18) !important;
+  outline: none !important;
+}
+input::placeholder, textarea::placeholder { color: var(--sz-muted-2) !important; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--sz-secondary); }
+
+/* Search bar */
+input[type="search"], input[placeholder*="Search"], input[placeholder*="Cari"] {
+  background: rgba(5,34,64,.80) !important;
+  border: 1px solid var(--sz-border-2) !important;
+  border-radius: 50px !important;
+  padding-left: 38px !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   STAT CARDS — Dashboard (Total Server / Online / Offline / Storage)
+   Target: div.bg-gray-700 berisi ikon + angka besar
+   ═══════════════════════════════════════════════════ */
+
+/* Wrapper grid kartu stat */
+[class*="StatBlock"], [class*="stat-block"],
+.grid > .bg-gray-700, .flex > .bg-gray-700 {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Garis warna atas kartu — semua kartu */
+.bg-gray-700::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--sz-secondary), var(--sz-primary));
+  border-radius: var(--sz-radius) var(--sz-radius) 0 0;
+  opacity: .7;
+}
+
+/* Badge status Online */
+.text-green-400, .text-green-500 { color: #4ade80 !important; font-weight: 700; }
+span[class*="Online"], span[class*="online"],
+[class*="StatusIndicator"][class*="green"] {
+  background: rgba(34,197,94,.18) !important;
+  color: #4ade80 !important;
+  border: 1px solid rgba(34,197,94,.35) !important;
+  border-radius: 50px !important;
+  padding: 2px 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  animation: sz-pulse-glow 3s ease-in-out infinite;
+}
+
+/* Badge status Offline */
+.text-red-400, .text-red-500 { color: #f87171 !important; font-weight: 700; }
+span[class*="Offline"], span[class*="offline"],
+[class*="StatusIndicator"][class*="red"] {
+  background: rgba(239,68,68,.16) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239,68,68,.32) !important;
+  border-radius: 50px !important;
+  padding: 2px 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+/* Progress bar (Storage) */
+[class*="progress"], [role="progressbar"], .bg-cyan-400, .bg-blue-400 {
+  border-radius: 50px !important;
+  overflow: hidden;
+}
+[class*="progress"] > *, [role="progressbar"] > * {
+  background: linear-gradient(90deg, var(--sz-secondary), var(--sz-primary)) !important;
+  border-radius: 50px !important;
+  transition: width .5s ease !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   SERVER LIST CARDS (di dashboard)
+   ═══════════════════════════════════════════════════ */
+[class*="ServerRow"], [class*="server-row"],
+div[class*="ServerEntry"], div[class*="server-entry"] {
+  background: var(--sz-glass-2) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 14px !important;
+  padding: 14px 16px !important;
+  margin-bottom: 8px !important;
+  transition: border-color .2s, transform .15s, box-shadow .2s !important;
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+[class*="ServerRow"]:hover, [class*="server-row"]:hover,
+div[class*="ServerEntry"]:hover, div[class*="server-entry"]:hover {
+  border-color: var(--sz-border-2) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,.40), var(--sz-glow) !important;
+}
+
+/* Ikon server (gambar/logo di kartu server) */
+[class*="ServerRow"] img, [class*="ServerEntry"] img {
+  border-radius: 10px !important;
+  border: 1px solid var(--sz-border) !important;
+}
+
+/* IP & port */
+[class*="ServerRow"] [class*="address"],
+[class*="ServerRow"] [class*="ip"],
+[class*="ServerEntry"] code {
+  font-family: "JetBrains Mono","Fira Code", Consolas, monospace !important;
+  font-size: 12px !important;
+  color: var(--sz-muted) !important;
+  background: rgba(2,14,26,.55) !important;
+  padding: 2px 8px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--sz-border) !important;
+}
+
+/* RAM usage chip */
+[class*="ServerRow"] [class*="memory"],
+[class*="ServerRow"] [class*="ram"],
+[class*="ServerEntry"] [class*="memory"] {
+  font-size: 12px !important;
+  color: var(--sz-secondary) !important;
+  background: rgba(34,211,238,.10) !important;
+  padding: 2px 8px !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(34,211,238,.20) !important;
+}
+
+/* Tombol aksi server (console, settings, ...) */
+[class*="ServerRow"] button,
+[class*="ServerEntry"] button {
+  background: rgba(34,211,238,.08) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 8px !important;
+  color: var(--sz-muted) !important;
+  width: 32px !important; height: 32px !important;
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
+  transition: background .15s, color .15s, border-color .15s !important;
+}
+[class*="ServerRow"] button:hover,
+[class*="ServerEntry"] button:hover {
+  background: rgba(34,211,238,.22) !important;
+  border-color: var(--sz-secondary) !important;
+  color: var(--sz-secondary) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   LOGIN PAGE
+   ═══════════════════════════════════════════════════ */
+.bg-white.shadow-lg {
+  background: rgba(5,34,64,.65) !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--sz-border-2) !important;
+  border-radius: var(--sz-radius-xl) !important;
+  box-shadow: 0 24px 72px rgba(0,0,0,.50), var(--sz-glow-lg) !important;
+}
+.bg-white.shadow-lg label,
+.bg-white.shadow-lg p,
+.bg-white.shadow-lg span,
+.bg-white.shadow-lg h2 { color: var(--sz-muted) !important; }
+.bg-white.shadow-lg input { font-size: 15px !important; }
+.bg-white.shadow-lg a { color: var(--sz-secondary) !important; }
+.bg-white.shadow-lg h2 { color: var(--sz-text) !important; font-weight: 800 !important; font-size: 22px !important; }
+
+/* "Ingat saya" checkbox label */
+.bg-white.shadow-lg label[for] { color: var(--sz-text-2) !important; font-size: 14px !important; }
+
+/* Lupa password link */
+.bg-white.shadow-lg a[href*="forgot"], .bg-white.shadow-lg a[href*="password"] {
+  font-size: 13px !important; font-weight: 600 !important;
+}
+
+/* Layout login desktop: form kanan, hero kiri */
+@keyframes sz-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@media (min-width: 1024px) {
+  html[data-skyzz-page="auth"] .bg-white.shadow-lg {
+    animation: sz-float 7s ease-in-out infinite;
+  }
+  html[data-skyzz-page="auth"] form {
+    max-width: 27rem !important;
+    margin-left: auto !important;
+    margin-right: 7vw !important;
+  }
+  html[data-skyzz-page="auth"] .bg-white.shadow-lg > div:first-child { display: none; }
+  html[data-skyzz-page="auth"] .bg-white.shadow-lg { padding-left: 1.5rem !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   KONSOL / TERMINAL
+   ═══════════════════════════════════════════════════ */
+.xterm { padding: 10px 12px; }
+.xterm-viewport { background-color: transparent !important; }
+.xterm, .xterm-screen {
+  border-radius: 14px;
+  background: rgba(2,10,20,.90) !important;
+}
+[class*="Console"], [class*="console"] {
+  background: rgba(2,10,20,.92) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 14px !important;
+}
+
+/* Quick Commands sidebar (terminal) */
+[class*="QuickCommand"], [class*="quick-command"] {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 10px !important;
+  margin-bottom: 6px !important;
+  transition: background .15s, border-color .15s !important;
+}
+[class*="QuickCommand"]:hover, [class*="quick-command"]:hover {
+  background: rgba(34,211,238,.12) !important;
+  border-color: var(--sz-secondary) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   FILE MANAGER
+   ═══════════════════════════════════════════════════ */
+[class*="FileObjectRow"], [class*="file-row"] {
+  border-radius: 10px !important;
+  transition: background .15s !important;
+}
+[class*="FileObjectRow"]:hover, [class*="file-row"]:hover,
+a[href*="/files/"]:hover {
+  background: rgba(34,211,238,.08) !important;
+}
+[class*="FileObjectRow"] [class*="icon"],
+[class*="file-row"] [class*="icon"] {
+  color: var(--sz-secondary) !important;
+}
+
+/* Upload / New Folder tombol */
+[class*="FileManager"] [class*="Upload"],
+[class*="FileManager"] button[class*="primary"] {
+  background: linear-gradient(135deg, var(--sz-secondary), var(--sz-primary)) !important;
+  border-radius: 12px !important;
+  color: #021525 !important;
+  font-weight: 700 !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   EDITOR (CodeMirror)
+   ═══════════════════════════════════════════════════ */
+.CodeMirror {
+  background: #020e1a !important;
+  color: #d6f4ff !important;
+  border-radius: 14px !important;
+  font-family: "JetBrains Mono","Fira Code", Consolas, monospace !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  border: 1px solid var(--sz-border) !important;
+}
+.CodeMirror-gutters {
+  background: #010d18 !important;
+  border-right: 1px solid var(--sz-border) !important;
+  border-radius: 14px 0 0 14px !important;
+}
+.CodeMirror-linenumber  { color: #3d6e8a !important; }
+.CodeMirror-cursor      { border-left-color: var(--sz-secondary) !important; border-left-width: 2px !important; }
+.CodeMirror-activeline-background { background: rgba(34,211,238,.06) !important; }
+.CodeMirror-selected    { background: rgba(30,144,255,.30) !important; }
+.CodeMirror-matchingbracket { color: var(--sz-secondary) !important; text-decoration: none !important; }
+
+/* Editor file tree (kanan/kiri) */
+[class*="FileTree"], [class*="file-tree"] {
+  background: rgba(2,14,26,.88) !important;
+  border-left: 1px solid var(--sz-border) !important;
+}
+[class*="FileTree"] li, [class*="file-tree"] li {
+  border-radius: 8px !important;
+  transition: background .1s !important;
+  cursor: pointer;
+}
+[class*="FileTree"] li:hover, [class*="file-tree"] li:hover {
+  background: rgba(34,211,238,.08) !important;
+}
+[class*="FileTree"] [class*="active"], [class*="file-tree"] [class*="active"] {
+  background: rgba(34,211,238,.15) !important;
+  color: var(--sz-secondary) !important;
+  border-left: 3px solid var(--sz-secondary) !important;
+}
+
+/* Tombol Simpan */
+[class*="SaveButton"], button[class*="save"] {
+  background: linear-gradient(135deg, var(--sz-secondary), var(--sz-primary)) !important;
+  color: #021525 !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  border: none !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   TABEL (umum)
+   ═══════════════════════════════════════════════════ */
+table { border-collapse: separate; border-spacing: 0 4px; }
+thead th {
+  color: var(--sz-muted) !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  letter-spacing: .8px !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+  background: transparent !important;
+}
+tbody tr td {
+  background: rgba(8,49,85,.40) !important;
+  border-top: 1px solid var(--sz-border) !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+  transition: background .15s !important;
+}
+tbody tr td:first-child { border-left: 1px solid var(--sz-border) !important; border-radius: 10px 0 0 10px !important; }
+tbody tr td:last-child  { border-right: 1px solid var(--sz-border) !important; border-radius: 0 10px 10px 0 !important; }
+tbody tr:hover td { background: rgba(34,211,238,.07) !important; }
+
+/* ═══════════════════════════════════════════════════
+   MODAL / DIALOG
+   ═══════════════════════════════════════════════════ */
+.ReactModal__Overlay, [class*="ModalOverlay"] {
+  background: rgba(2,10,22,.75) !important;
+  backdrop-filter: blur(6px) !important;
+}
+.ReactModal__Content, div[class*="Modal"] > div {
+  background: var(--sz-surface) !important;
+  border: 1px solid var(--sz-border-2) !important;
+  border-radius: var(--sz-radius-xl) !important;
+  box-shadow: var(--sz-shadow-lg), var(--sz-glow-lg) !important;
+  color: var(--sz-text) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   BREADCRUMB / SUBNAV
+   ═══════════════════════════════════════════════════ */
+[class*="SubNavigation"], [class*="Breadcrumb"] {
+  background: rgba(5,34,64,.85) !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+  backdrop-filter: blur(10px);
+}
+[class*="SubNavigation"] a { border-radius: 8px !important; }
+[class*="SubNavigation"] a[class*="active"] {
+  color: var(--sz-secondary) !important;
+  border-bottom: 2px solid var(--sz-secondary) !important;
+  background: rgba(34,211,238,.08) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   TOOLTIP / BADGE / CHIP
+   ═══════════════════════════════════════════════════ */
+[class*="Tooltip"], [role="tooltip"] {
+  background: var(--sz-surface-3) !important;
+  border: 1px solid var(--sz-border-2) !important;
+  border-radius: 8px !important;
+  color: var(--sz-text) !important;
+  font-size: 13px !important;
+  box-shadow: var(--sz-shadow) !important;
+  animation: sz-badge-pop .15s ease;
+}
+
+/* ═══════════════════════════════════════════════════
+   DEKORASI ILUSTRASI (#sz-deco — dibuat oleh skyzz.js)
+   ═══════════════════════════════════════════════════ */
+#sz-deco {
+  position: fixed; inset: 0;
+  z-index: 0; pointer-events: none; overflow: hidden;
+}
+#sz-deco img {
+  position: absolute; display: block; height: auto; user-select: none;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,.35));
+}
+
+/* Karang pojok */
+.sz-coral-l { left: -10px; bottom: -8px; width: clamp(100px, 14vw, 210px); opacity: .95; }
+.sz-coral-r { right: -10px; bottom: -8px; width: clamp(100px, 14vw, 210px); transform: scaleX(-1); opacity: .95; }
+
+/* Karakter: tersembunyi default */
+.sz-whale, .sz-turtle, .sz-octopus, .sz-hero { display: none; }
+
+/* Dashboard */
+html[data-skyzz-page="dashboard"] .sz-whale {
+  display: block; top: 68px; right: 4vw; width: clamp(140px,18vw,240px);
+  opacity: .50; animation: sz-float 12s ease-in-out infinite;
+}
+html[data-skyzz-page="dashboard"] .sz-turtle {
+  display: block; right: 18vw; bottom: 10px; width: clamp(80px,10vw,130px);
+  opacity: .88; animation: sz-bob 14s ease-in-out infinite;
+}
+
+/* Console & Files: gurita */
+html[data-skyzz-page="console"] .sz-octopus,
+html[data-skyzz-page="files"]   .sz-octopus {
+  display: block; right: 12vw; bottom: 2px; width: 100px;
+  opacity: .90; animation: sz-bob 9s ease-in-out infinite;
+}
+
+/* Admin panel: sembunyikan deco besar */
+html[data-skyzz-page="admin"] #sz-deco { display: none; }
+html[data-skyzz-page="auth"]  .sz-whale { display: none !important; }
+
+/* Hero login */
+.sz-hero {
+  position: absolute; left: 6vw; top: 50%; transform: translateY(-50%);
+  max-width: 460px; color: var(--sz-text);
+}
+html[data-skyzz-page="auth"] .sz-hero { display: block; }
+.sz-hero-logo  { position: static !important; width: 280px; margin-bottom: 8px; }
+.sz-hero-tag   { margin: 0 0 30px; color: var(--sz-muted); font-size: 15px; font-weight: 600; }
+.sz-hero h2    { margin: 0; font-size: 22px; font-weight: 700; color: var(--sz-muted); }
+.sz-hero h1    { margin: 0 0 14px; font-size: 54px; line-height: 1.04; font-weight: 900; letter-spacing: -1px; }
+.sz-hero h1 span { color: var(--sz-secondary); }
+.sz-hero-desc  { margin: 0 0 28px; color: var(--sz-muted); line-height: 1.6; font-size: 15px; }
+.sz-hero ul    { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; font-size: 13px; color: var(--sz-muted); }
+.sz-hero li    { max-width: 120px; padding-top: 36px; position: relative; font-weight: 600; }
+.sz-hero li::before {
+  content: ""; position: absolute; left: 0; top: 0;
+  width: 30px; height: 30px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--sz-secondary), var(--sz-primary));
+  opacity: .90; box-shadow: 0 4px 12px rgba(30,144,255,.35);
+}
+
+html[data-skyzz-creatures="off"] #sz-deco,
+html[data-skyzz-ocean="off"]     #sz-deco { display: none; }
+
+@media (max-width: 1100px) { .sz-whale, .sz-turtle { display: none !important; } }
+@media (max-width: 1023px) {
+  .sz-hero { display: none !important; }
+  .sz-octopus { width: 72px !important; right: 3vw !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   BANNER SAMBUTAN DASHBOARD (#sz-welcome)
+   ═══════════════════════════════════════════════════ */
+:root { --sz-nav-h: 64px; }
+
+#sz-welcome {
+  position: fixed; left: 0; right: 0; top: var(--sz-nav-h);
+  z-index: 5;
+  max-width: 1200px; margin: 14px auto 0;
+  padding: 18px 28px;
+  border-radius: var(--sz-radius-lg); overflow: hidden;
+  background: linear-gradient(120deg, rgba(30,144,255,.42), rgba(34,211,238,.24), rgba(168,85,247,.18));
+  border: 1px solid var(--sz-border-2);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.35), 0 0 60px rgba(34,211,238,.08);
+  backdrop-filter: blur(10px);
+}
+#sz-welcome::before {
+  content: ""; position: absolute; inset: 0;
+  background: url(/skyzz/wave.svg) repeat-x bottom / 800px 40px;
+  opacity: .08; pointer-events: none;
+}
+.sz-welcome-eyebrow { margin: 0 0 4px; color: var(--sz-secondary); font-size: 13px; font-weight: 800; letter-spacing: .5px; }
+#sz-welcome h3      { margin: 0; font-size: 18px; font-weight: 800; color: var(--sz-text); max-width: 560px; }
+.sz-welcome-whale   { width: 110px; flex-shrink: 0; opacity: 1; filter: drop-shadow(0 4px 12px rgba(0,0,0,.30)); }
+
+html[data-skyzz-page="dashboard"][data-skyzz-welcome="on"] #app {
+  padding-top: calc(var(--sz-nav-h) + 86px);
+}
+
+@media (max-width: 768px) {
+  #sz-welcome {
+    top: env(safe-area-inset-top, 0px);
+    margin: 8px 10px 0; padding: 12px 16px;
+  }
+  .sz-welcome-whale { width: 60px; }
+  #sz-welcome h3 { font-size: 13px; }
+  html[data-skyzz-page="dashboard"][data-skyzz-welcome="on"] #app {
+    padding-top: calc(74px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   BRAND LOGIN MOBILE
+   ═══════════════════════════════════════════════════ */
+#sz-mobile-brand { display: none; }
+
+/* ═══════════════════════════════════════════════════
+   ADMIN PANEL (AdminLTE / Blade)
+   ═══════════════════════════════════════════════════ */
+.skin-blue .main-header .navbar,
+.skin-blue .main-header .logo {
+  background: linear-gradient(90deg, #020e1a, #052240) !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+}
+.skin-blue .main-sidebar, .skin-blue .left-side {
+  background: rgba(2,14,26,.98) !important;
+  border-right: 1px solid var(--sz-border) !important;
+}
+.skin-blue .sidebar-menu > li.active > a,
+.skin-blue .sidebar-menu > li:hover > a {
+  background: rgba(34,211,238,.10) !important;
+  border-left-color: var(--sz-secondary) !important;
+  color: var(--sz-text) !important;
+}
+.skin-blue .sidebar-menu > li.active > a { background: rgba(34,211,238,.16) !important; }
+.content-wrapper, .right-side { background: transparent !important; }
+.box {
+  background: rgba(8,49,85,.65) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-top: 3px solid var(--sz-secondary) !important;
+  border-radius: var(--sz-radius) !important;
+  color: var(--sz-text) !important;
+  box-shadow: var(--sz-shadow) !important;
+}
+.box-header, .box-footer { background: transparent !important; border-color: var(--sz-border) !important; }
+.content-header > h1, .box-title, .box .box-body, label { color: var(--sz-text) !important; }
+.content-header > h1 > small { color: var(--sz-muted) !important; }
+.btn-primary, .btn-success {
+  background: linear-gradient(135deg, var(--sz-secondary), var(--sz-primary)) !important;
+  border: 0 !important; color: #021525 !important; border-radius: 12px !important;
+  font-weight: 700 !important;
+}
+.btn-danger { background: linear-gradient(135deg, #f87171, #ef4444) !important; border: 0 !important; border-radius: 12px !important; }
+.form-control {
+  background: rgba(2,14,26,.75) !important;
+  color: var(--sz-text) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+}
+.table > thead > tr > th,
+.table > tbody > tr > td { border-color: var(--sz-border) !important; color: var(--sz-text) !important; }
+.table-hover > tbody > tr:hover { background: rgba(34,211,238,.07) !important; }
+.small-box { border-radius: var(--sz-radius) !important; overflow: hidden; }
+.main-footer {
+  background: transparent !important;
+  border-top: 1px solid var(--sz-border) !important;
+  color: var(--sz-muted) !important;
+}
+.nav-tabs-custom, .nav-tabs-custom > .tab-content {
+  background: transparent !important;
+  border-color: var(--sz-border) !important;
+}
+.nav-tabs-custom > .nav-tabs > li.active { border-top-color: var(--sz-secondary) !important; }
+.nav-tabs-custom > .nav-tabs > li.active > a { background: rgba(34,211,238,.10) !important; color: var(--sz-text) !important; }
+.callout { border-color: var(--sz-secondary) !important; background: rgba(8,49,85,.60) !important; }
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIF DESKTOP
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .max-w-screen-xl, .container { padding-left: 14px !important; padding-right: 14px !important; }
+}
+@media (max-width: 768px) {
+  html::before { display: none; }
+  body::after  { width: 56px; height: 30px; }
+  table        { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  button, a.bg-primary-500, .bg-primary-500 { min-height: 44px; }
+  [class*="SubNavigation"], nav .overflow-x-auto { overflow-x: auto; white-space: nowrap; }
+  .bg-gray-700  { border-radius: 14px !important; }
+  .CodeMirror   { font-size: 13px !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   SkyZzPANEL v1.3.0 — UPGRADES (status, cards, glass)
+   ═══════════════════════════════════════════════════ */
+
+/* Status Online / Offline badges — lebih jelas seperti preview */
+[class*="status"], .status-bar, span[class*="online"], span[class*="Offline"],
+.bg-green-500.text-xs, .bg-red-500.text-xs,
+.rounded-full.bg-green-500, .rounded-full.bg-red-500,
+.rounded-full.bg-green-600, .rounded-full.bg-red-600 {
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  box-shadow: 0 0 12px currentColor;
+}
+
+/* Titik status glow */
+.bg-green-500.rounded-full, .bg-green-400.rounded-full,
+.bg-emerald-500.rounded-full {
+  box-shadow: 0 0 10px rgba(34,197,94,.55) !important;
+}
+.bg-red-500.rounded-full, .bg-red-400.rounded-full {
+  box-shadow: 0 0 10px rgba(239,68,68,.5) !important;
+}
+
+/* Server list cards — hover & chip lebih modern */
+.bg-gray-700.rounded, .bg-gray-700.rounded-lg,
+[class*="ServerRow"], [class*="server-row"] {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+}
+.bg-gray-700.rounded:hover, .bg-gray-700.rounded-lg:hover {
+  transform: translateY(-2px) !important;
+  border-color: var(--sz-border-2) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,.42) !important;
+}
+
+/* Progress bar RAM/CPU/Storage */
+.progress, [class*="ProgressBar"], .bg-gray-600.rounded-full, .h-2.rounded-full, .h-1\.5.rounded-full {
+  background: rgba(5,34,64,.85) !important;
+  overflow: hidden;
+  border-radius: 6px !important;
+}
+.progress-bar, [class*="ProgressBar"] > div,
+.bg-blue-500.h-full, .bg-primary-500.h-full, .bg-cyan-500.h-full {
+  background: linear-gradient(90deg, var(--sz-primary), var(--sz-secondary)) !important;
+  border-radius: 6px !important;
+}
+.bg-green-500.h-full, .bg-emerald-500.h-full {
+  background: linear-gradient(90deg, #34d399, var(--sz-green)) !important;
+}
+.bg-yellow-500.h-full, .bg-orange-500.h-full, .bg-amber-500.h-full {
+  background: linear-gradient(90deg, #fbbf24, var(--sz-accent)) !important;
+}
+
+/* Tombol aksi server lebih bulat & ber-shadow */
+.bg-primary-500, .bg-primary-600, a.bg-primary-500, button.bg-primary-500 {
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(30,144,255,.28) !important;
+}
+.bg-primary-500:hover, .bg-primary-600:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(30,144,255,.42) !important;
+}
+
+/* Input & search lebih soft */
+input[type="search"], input[placeholder*="Search"], input[placeholder*="Cari"],
+input[placeholder*="search"] {
+  border-radius: 50px !important;
+  background: rgba(5,34,64,.85) !important;
+}
+
+/* Modal backdrop lebih gelap ocean */
+.ReactModal__Overlay, [class*="ModalOverlay"], .fixed.inset-0.bg-black {
+  background: rgba(2, 14, 26, 0.78) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Login card glass lebih kuat */
+form.bg-white, form[action*="login"], .login-form,
+[class*="LoginForm"], .bg-white.rounded-lg.shadow {
+  background: rgba(8, 49, 85, 0.82) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid var(--sz-border-2) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,.5) !important;
+  color: var(--sz-text) !important;
+}
+form.bg-white label, form[action*="login"] label {
+  color: var(--sz-text-2) !important;
+}
+
+/* File manager row hover */
+table tbody tr:hover td {
+  background: rgba(34,211,238,.05) !important;
+}
+
+/* CodeMirror / Editor */
+.CodeMirror {
+  background: #0a1a2a !important;
+  color: #c5e8f5 !important;
+  border-radius: 0 0 12px 12px !important;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace !important;
+}
+.CodeMirror-gutters {
+  background: rgba(2,14,26,.7) !important;
+  border-right: 1px solid var(--sz-border) !important;
+}
+.CodeMirror-linenumber { color: var(--sz-muted-2) !important; }
+
+/* xterm Terminal */
+.xterm {
+  padding: 12px !important;
+  background: #071018 !important;
+}
+.xterm-viewport { background: #071018 !important; }
+
+/* Navbar glass */
+nav.bg-gray-900, .bg-gray-900.shadow-md, header.bg-gray-900 {
+  background: rgba(3,21,37,.82) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+}
+
+/* Sidebar aktif item (client panel) */
+[class*="Sidebar"] a.active, nav a.active,
+.bg-gray-900 a.bg-gray-700, a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(34,211,238,.16), rgba(30,144,255,.06)) !important;
+  color: var(--sz-secondary) !important;
+  box-shadow: inset 3px 0 0 var(--sz-secondary) !important;
+  border-radius: 12px !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.3.1 — Fix bagian panel yang belum ke-theme
+   (Files, Databases, Backups, Users, Schedules, Console)
+   ═══════════════════════════════════════════════════ */
+
+/* Sub-navigation tabs (Console | Files | Databases | ...) */
+[class*="SubNavigation"], [class*="sub-navigation"],
+nav .flex.overflow-x-auto, .overflow-x-auto.border-b {
+  background: rgba(6, 39, 68, 0.92) !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+  backdrop-filter: blur(10px);
+}
+[class*="SubNavigation"] a,
+.overflow-x-auto a, .overflow-x-auto button {
+  color: var(--sz-muted) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  border-bottom: 2px solid transparent !important;
+  padding: 10px 14px !important;
+  transition: color .15s, border-color .15s !important;
+}
+[class*="SubNavigation"] a:hover,
+.overflow-x-auto a:hover {
+  color: var(--sz-text) !important;
+}
+[class*="SubNavigation"] a.active,
+[class*="SubNavigation"] a[aria-current],
+.overflow-x-auto a.border-b-2,
+.overflow-x-auto a[class*="border-cyan"],
+.overflow-x-auto a[class*="border-blue"],
+.overflow-x-auto a[class*="text-cyan"],
+.overflow-x-auto a[class*="text-primary"] {
+  color: var(--sz-secondary) !important;
+  border-bottom-color: var(--sz-secondary) !important;
+}
+
+/* Empty state text */
+p.text-gray-400, p.text-neutral-400, .text-center.text-gray-400,
+.text-center.text-neutral-300, .text-center.text-gray-300 {
+  color: var(--sz-muted) !important;
+  font-size: 14px !important;
+}
+
+/* Tombol utama (NEW DATABASE, CREATE BACKUP, Upload, New File, Create schedule, New User) */
+button.bg-blue-500, button.bg-blue-600, a.bg-blue-500, a.bg-blue-600,
+button.bg-primary-500, a.bg-primary-500,
+.bg-blue-500, .bg-blue-600 {
+  background: linear-gradient(135deg, var(--sz-primary), var(--sz-secondary)) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(30,144,255,.30) !important;
+  color: #fff !important;
+  text-transform: none !important;
+}
+button.bg-blue-500:hover, button.bg-blue-600:hover,
+.bg-blue-500:hover, .bg-blue-600:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(30,144,255,.45) !important;
+}
+
+/* Tombol Start / Restart / Stop di Console */
+button.bg-green-500, button.bg-green-600, .bg-green-500, .bg-green-600 {
+  background: linear-gradient(135deg, #34d399, var(--sz-green)) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(34,197,94,.28) !important;
+  color: #fff !important;
+}
+button.bg-red-500, button.bg-red-600, .bg-red-500, .bg-red-600 {
+  background: linear-gradient(135deg, #f87171, var(--sz-red)) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(239,68,68,.28) !important;
+  color: #fff !important;
+}
+button.bg-gray-500, button.bg-gray-600, button.bg-neutral-500, button.bg-neutral-600,
+.bg-gray-500, .bg-gray-600, .bg-neutral-600 {
+  background: rgba(8,49,85,.85) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  color: var(--sz-text-2) !important;
+  box-shadow: none !important;
+}
+
+/* File manager list rows */
+.bg-neutral-700, .bg-gray-700.rounded, [class*="FileObjectRow"],
+div[class*="file"] > div.flex {
+  background: rgba(8,49,85,.55) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  margin-bottom: 6px !important;
+  transition: background .15s, border-color .15s !important;
+}
+.bg-neutral-700:hover, .bg-gray-700.rounded:hover {
+  background: rgba(34,211,238,.08) !important;
+  border-color: var(--sz-border-2) !important;
+}
+
+/* Breadcrumb path file */
+code, .font-mono.text-sm, span.font-mono {
+  color: var(--sz-secondary) !important;
+  background: rgba(5,34,64,.6) !important;
+  padding: 2px 8px !important;
+  border-radius: 6px !important;
+}
+
+/* Create Directory bar */
+.bg-neutral-600, .bg-gray-600.rounded, button.bg-neutral-700 {
+  background: rgba(8,49,85,.75) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  color: var(--sz-text) !important;
+  font-weight: 700 !important;
+}
+
+/* Console terminal area */
+.xterm, [class*="Console"] .bg-black, [class*="terminal"] {
+  background: #071018 !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--sz-border) !important;
+}
+
+/* Footer copyright */
+.text-center.text-xs, footer, .text-neutral-500.text-xs {
+  color: var(--sz-muted-2) !important;
+}
+
+/* Floating WhatsApp button — jangan diubah, biarkan hijau */
+a[href*="whatsapp"], a[href*="wa.me"],
+button[class*="whatsapp"], .wa-float {
+  /* biarkan style aslinya */
+}
+
+/* Checkbox file manager */
+input[type="checkbox"] {
+  accent-color: var(--sz-secondary) !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Scrollbar di file list */
+.overflow-y-auto::-webkit-scrollbar { width: 6px; }
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: var(--sz-primary);
+  border-radius: 6px;
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.3.2 — Network · Startup · Settings · Activity
+   ═══════════════════════════════════════════════════ */
+
+/* ── Kartu / box umum di halaman server ── */
+.bg-neutral-700.rounded-lg,
+.bg-gray-700.rounded-lg,
+.bg-neutral-800.rounded,
+[class*="GreyRowBox"],
+[class*="TitledGreyBox"],
+[class*="ServerContentBlock"] > div.bg-neutral-700,
+[class*="ServerContentBlock"] > div.bg-gray-700 {
+  background: rgba(8, 49, 85, 0.72) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: var(--sz-radius-lg) !important;
+  box-shadow: var(--sz-shadow) !important;
+  color: var(--sz-text) !important;
+}
+
+/* Judul section di dalam kartu */
+.bg-neutral-700 h1, .bg-neutral-700 h2, .bg-neutral-700 h3,
+.bg-gray-700 h1, .bg-gray-700 h2, .bg-gray-700 h3,
+[class*="TitledGreyBox"] p.font-medium,
+[class*="TitledGreyBox"] .font-semibold {
+  color: var(--sz-text) !important;
+  font-weight: 800 !important;
+}
+.bg-neutral-700 p, .bg-gray-700 p,
+[class*="TitledGreyBox"] p.text-sm,
+[class*="TitledGreyBox"] .text-neutral-300 {
+  color: var(--sz-muted) !important;
+}
+
+/* ── NETWORK: allocation rows ── */
+[class*="AllocationRow"], [class*="allocation"],
+.bg-neutral-700.flex.items-center,
+.bg-gray-700.flex.items-center {
+  background: rgba(8, 49, 85, 0.6) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  margin-bottom: 8px !important;
+  padding: 12px 14px !important;
+  transition: border-color .15s, background .15s !important;
+}
+[class*="AllocationRow"]:hover,
+.bg-neutral-700.flex.items-center:hover {
+  border-color: var(--sz-border-2) !important;
+  background: rgba(34, 211, 238, 0.07) !important;
+}
+
+/* IP / Port chip di Network */
+code.bg-neutral-900, code.bg-gray-900,
+span.font-mono.bg-neutral-900, span.font-mono.bg-gray-800,
+.font-mono.text-sm.bg-neutral-900 {
+  background: rgba(5, 34, 64, 0.85) !important;
+  color: var(--sz-secondary) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 8px !important;
+  padding: 3px 10px !important;
+  font-weight: 700 !important;
+}
+
+/* Primary allocation badge */
+.bg-green-500.text-xs, .bg-green-600.text-xs,
+span.bg-green-500.rounded, span.bg-green-600.rounded {
+  background: linear-gradient(135deg, #34d399, var(--sz-green)) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  border-radius: 50px !important;
+  box-shadow: 0 0 10px rgba(34,197,94,.35) !important;
+}
+
+/* ── STARTUP: form variabel ── */
+label.text-neutral-200, label.text-gray-200,
+label.block.text-xs, label.block.text-sm {
+  color: var(--sz-text-2) !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.02em !important;
+}
+label .text-neutral-400, label .text-gray-400,
+label .text-xs.text-neutral-300 {
+  color: var(--sz-muted) !important;
+  font-weight: 600 !important;
+}
+
+/* Input / select / textarea di Startup & Settings */
+input.bg-neutral-800, input.bg-gray-800, input.bg-neutral-900,
+textarea.bg-neutral-800, textarea.bg-gray-800,
+select.bg-neutral-800, select.bg-gray-800,
+input[type="text"], input[type="number"], input[type="password"],
+textarea, select {
+  background: rgba(2, 14, 26, 0.8) !important;
+  color: var(--sz-text) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--sz-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18) !important;
+  outline: none !important;
+}
+input::placeholder, textarea::placeholder {
+  color: var(--sz-muted-2) !important;
+}
+
+/* Read-only / disabled field (startup command dll) */
+input:disabled, textarea:disabled, input[readonly], textarea[readonly] {
+  background: rgba(5, 34, 64, 0.55) !important;
+  color: var(--sz-muted) !important;
+  border-color: rgba(34, 211, 238, 0.1) !important;
+  opacity: 0.9 !important;
+}
+
+/* Docker image / startup command highlight */
+.font-mono.text-sm, code.font-mono {
+  color: var(--sz-secondary) !important;
+}
+
+/* ── SETTINGS: form groups ── */
+[class*="ServerContentBlock"] form,
+form.mb-6, form.mb-8 {
+  /* container tetap */
+}
+[class*="Label"], .field-label {
+  color: var(--sz-text-2) !important;
+}
+
+/* Tombol Save Changes di Settings / Startup */
+button[type="submit"].bg-primary-500,
+button[type="submit"].bg-blue-500,
+button.bg-primary-500[type="submit"],
+button:contains("Save") {
+  background: linear-gradient(135deg, var(--sz-primary), var(--sz-secondary)) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(30,144,255,.30) !important;
+  color: #fff !important;
+  min-height: 42px !important;
+}
+
+/* Danger zone (Delete Server dll) di Settings */
+.border-red-500, .border-red-600, [class*="DangerZone"],
+.bg-red-500\/10, .bg-red-600\/10 {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-radius: var(--sz-radius) !important;
+}
+button.bg-red-500, button.bg-red-600,
+a.bg-red-500, a.bg-red-600 {
+  background: linear-gradient(135deg, #f87171, var(--sz-red)) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(239,68,68,.28) !important;
+  color: #fff !important;
+}
+
+/* Switch / toggle di Settings */
+button[role="switch"], [class*="ToggleSwitch"],
+.bg-neutral-600.rounded-full, .bg-gray-600.rounded-full {
+  background: rgba(5, 34, 64, 0.9) !important;
+  border: 1px solid var(--sz-border) !important;
+}
+button[role="switch"][aria-checked="true"],
+[class*="ToggleSwitch"][data-state="checked"],
+.bg-primary-500.rounded-full, .bg-blue-500.rounded-full {
+  background: linear-gradient(90deg, var(--sz-primary), var(--sz-secondary)) !important;
+  border-color: transparent !important;
+}
+
+/* ── ACTIVITY: log list ── */
+[class*="ActivityLog"], [class*="activity"],
+.bg-neutral-700.mb-2, .bg-gray-700.mb-2,
+div.flex.items-center.bg-neutral-700 {
+  background: rgba(8, 49, 85, 0.55) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  margin-bottom: 8px !important;
+  padding: 12px 14px !important;
+  transition: background .15s !important;
+}
+[class*="ActivityLog"]:hover,
+.bg-neutral-700.mb-2:hover {
+  background: rgba(34, 211, 238, 0.07) !important;
+}
+
+/* Timestamp di Activity */
+.text-neutral-400.text-xs, .text-gray-400.text-xs,
+time, .text-xs.text-neutral-300 {
+  color: var(--sz-muted-2) !important;
+  font-weight: 600 !important;
+}
+
+/* Event description */
+.text-neutral-200, .text-gray-200,
+[class*="ActivityLog"] .font-semibold {
+  color: var(--sz-text) !important;
+}
+
+/* Actor / IP di activity */
+.text-neutral-300.text-sm, .text-gray-300.text-sm {
+  color: var(--sz-muted) !important;
+}
+
+/* Pagination di Activity */
+button.bg-neutral-700, a.bg-neutral-700,
+button.bg-gray-700, a.bg-gray-700 {
+  background: rgba(8, 49, 85, 0.8) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 10px !important;
+  color: var(--sz-text-2) !important;
+  font-weight: 700 !important;
+}
+button.bg-neutral-700:hover, a.bg-neutral-700:hover {
+  border-color: var(--sz-border-2) !important;
+  color: var(--sz-secondary) !important;
+}
+
+/* ── Select dropdown (Startup docker image dll) ── */
+[class*="Select"] .css-control,
+[class*="react-select"] .css-yk16xz-control,
+div[class*="control"] {
+  background: rgba(2, 14, 26, 0.85) !important;
+  border-color: var(--sz-border) !important;
+  border-radius: 12px !important;
+  color: var(--sz-text) !important;
+  min-height: 42px !important;
+}
+[class*="Select"] .css-menu,
+[class*="react-select"] .css-menu {
+  background: rgba(8, 49, 85, 0.95) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--sz-shadow) !important;
+}
+[class*="Select"] .css-option,
+[class*="react-select"] .css-option {
+  color: var(--sz-text) !important;
+  background: transparent !important;
+}
+[class*="Select"] .css-option:hover,
+[class*="react-select"] .css-option--is-focused {
+  background: rgba(34, 211, 238, 0.12) !important;
+  color: var(--sz-secondary) !important;
+}
+
+/* ── Helper text di bawah field ── */
+.p-2.bg-neutral-800, .p-2.bg-gray-800,
+.text-xs.text-neutral-400, .text-xs.text-gray-400 {
+  color: var(--sz-muted) !important;
+  background: rgba(5, 34, 64, 0.5) !important;
+  border-radius: 8px !important;
+  border-left: 3px solid var(--sz-secondary) !important;
+}
+
+/* ── Copy button di Network (copy IP) ── */
+button[aria-label*="opy"], button[title*="opy"],
+button .fa-copy, button svg[class*="copy"] {
+  color: var(--sz-secondary) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.3.2 — Network · Startup · Settings · Activity
+   ═══════════════════════════════════════════════════ */
+
+/* ── Shared: card / box di halaman server ── */
+[class*="ServerContent"] .bg-gray-700,
+[class*="ServerContent"] .bg-neutral-700,
+[class*="ServerContent"] .bg-gray-600,
+.bg-neutral-800.rounded, .bg-gray-800.rounded-lg {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: var(--sz-radius) !important;
+  box-shadow: var(--sz-shadow) !important;
+}
+
+/* Judul section di dalam halaman server */
+h1.text-2xl, h1.text-xl, h2.text-xl, h2.text-lg,
+[class*="PageContent"] h1, [class*="PageContent"] h2 {
+  color: var(--sz-text) !important;
+  font-weight: 800 !important;
+}
+p.text-neutral-300, p.text-gray-300, .text-neutral-400, .text-gray-400 {
+  color: var(--sz-muted) !important;
+}
+
+/* ═══════════════════════════════════════
+   NETWORK — Allocations / Ports
+   ═══════════════════════════════════════ */
+
+/* Tabel allocation (IP + Port) */
+table thead th {
+  background: rgba(3,21,37,.7) !important;
+  color: var(--sz-muted) !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: .4px !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+  padding: 10px 14px !important;
+}
+table tbody td {
+  border-bottom: 1px solid rgba(34,211,238,.06) !important;
+  color: var(--sz-text-2) !important;
+  padding: 12px 14px !important;
+  font-size: 13px !important;
+}
+table tbody tr:hover td {
+  background: rgba(34,211,238,.05) !important;
+}
+
+/* Chip IP / Port */
+code, .font-mono, span.font-mono, .bg-neutral-900, .bg-gray-900.px-2 {
+  background: rgba(5,34,64,.75) !important;
+  color: var(--sz-secondary) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 8px !important;
+  padding: 3px 8px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+/* Tombol Assign / Create Allocation */
+button[class*="Allocate"], a[href*="allocation"] {
+  border-radius: 12px !important;
+}
+
+/* Notes field di Network */
+textarea, input[name*="notes"], input[placeholder*="Notes"] {
+  background: rgba(2,14,26,.75) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  color: var(--sz-text) !important;
+}
+
+/* Primary allocation badge */
+.bg-green-500.text-xs, .bg-emerald-500.text-xs,
+span.bg-green-600, span.bg-emerald-600 {
+  background: rgba(34,197,94,.18) !important;
+  color: var(--sz-green) !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 10px rgba(34,197,94,.25);
+}
+
+/* ═══════════════════════════════════════
+   STARTUP — Variables & Docker image
+   ═══════════════════════════════════════ */
+
+/* Card tiap startup variable */
+[class*="Startup"] .bg-neutral-700,
+[class*="Startup"] .bg-gray-700,
+div[class*="variable"], div[class*="Variable"] {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: var(--sz-radius) !important;
+  padding: 16px !important;
+  margin-bottom: 12px !important;
+}
+
+/* Label variable (SERVER_JARFILE, dll) */
+label, .text-xs.uppercase, span.uppercase.tracking-wide {
+  color: var(--sz-muted) !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: .5px !important;
+}
+
+/* Input value startup */
+input[type="text"], input[type="number"], select {
+  background: rgba(2,14,26,.8) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  color: var(--sz-text) !important;
+  padding: 10px 12px !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus {
+  border-color: var(--sz-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,.15) !important;
+  outline: none !important;
+}
+
+/* Docker image / egg selector */
+select option {
+  background: var(--sz-deep) !important;
+  color: var(--sz-text) !important;
+}
+
+/* Description helper text di bawah variable */
+.Textarea, .description, .text-xs.text-neutral-400 {
+  color: var(--sz-muted-2) !important;
+  font-size: 12px !important;
+}
+
+/* Tombol Save Changes di Startup */
+button[type="submit"], button.bg-primary-500,
+button:contains("Save") {
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS — Server name, description, etc
+   ═══════════════════════════════════════ */
+
+/* Form group settings */
+form .FormGroup, form .form-group,
+[class*="Settings"] .bg-neutral-700,
+[class*="Settings"] .bg-gray-700 {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: var(--sz-radius) !important;
+  padding: 18px !important;
+  margin-bottom: 14px !important;
+}
+
+/* Input settings */
+[class*="Settings"] input,
+[class*="Settings"] textarea,
+[class*="Settings"] select {
+  background: rgba(2,14,26,.8) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  color: var(--sz-text) !important;
+}
+
+/* Danger zone (Delete server) */
+.bg-red-500\/10, .border-red-500, [class*="Danger"],
+.bg-red-600\/10, .border-red-600 {
+  background: rgba(239,68,68,.08) !important;
+  border: 1px solid rgba(239,68,68,.3) !important;
+  border-radius: var(--sz-radius) !important;
+}
+.bg-red-500\/10 h2, .border-red-500 h2, [class*="Danger"] h2 {
+  color: #f87171 !important;
+}
+
+/* Toggle / switch di settings */
+input[type="checkbox"], input[type="radio"] {
+  accent-color: var(--sz-secondary) !important;
+}
+[class*="Toggle"], [class*="Switch"], button[role="switch"] {
+  border-radius: 50px !important;
+}
+
+/* SFTP details box */
+[class*="SFTP"], [class*="sftp"] {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: var(--sz-radius) !important;
+  padding: 16px !important;
+}
+[class*="SFTP"] code, [class*="sftp"] code {
+  color: var(--sz-secondary) !important;
+}
+
+/* Copy button di settings */
+button[class*="Copy"], button[aria-label*="Copy"] {
+  background: rgba(8,49,85,.8) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 10px !important;
+  color: var(--sz-text-2) !important;
+}
+button[class*="Copy"]:hover {
+  border-color: var(--sz-secondary) !important;
+  color: var(--sz-secondary) !important;
+}
+
+/* ═══════════════════════════════════════
+   ACTIVITY — Audit log
+   ═══════════════════════════════════════ */
+
+/* List item activity */
+[class*="Activity"] .bg-neutral-700,
+[class*="Activity"] .bg-gray-700,
+[class*="ActivityLog"] > div,
+div[class*="activity"] .flex {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 12px !important;
+  margin-bottom: 8px !important;
+  padding: 12px 14px !important;
+  transition: border-color .15s !important;
+}
+[class*="Activity"] .bg-neutral-700:hover,
+[class*="Activity"] .bg-gray-700:hover {
+  border-color: var(--sz-border-2) !important;
+}
+
+/* Timestamp activity */
+time, .text-xs.text-neutral-400, .text-neutral-500 {
+  color: var(--sz-muted-2) !important;
+  font-size: 11px !important;
+}
+
+/* Event description */
+[class*="Activity"] p, [class*="Activity"] span {
+  color: var(--sz-text-2) !important;
+}
+
+/* Actor / user di activity */
+[class*="Activity"] .font-semibold, [class*="Activity"] strong {
+  color: var(--sz-secondary) !important;
+  font-weight: 700 !important;
+}
+
+/* IP address di activity log */
+[class*="Activity"] code {
+  background: rgba(5,34,64,.7) !important;
+  color: var(--sz-muted) !important;
+  border-radius: 6px !important;
+  padding: 2px 6px !important;
+  font-size: 11px !important;
+}
+
+/* Pagination activity */
+nav[aria-label*="Pagination"] a, nav[aria-label*="Pagination"] button,
+[class*="Pagination"] a, [class*="Pagination"] button {
+  background: rgba(8,49,85,.7) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 10px !important;
+  color: var(--sz-text-2) !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+}
+nav[aria-label*="Pagination"] a:hover,
+[class*="Pagination"] a:hover {
+  border-color: var(--sz-secondary) !important;
+  color: var(--sz-secondary) !important;
+}
+nav[aria-label*="Pagination"] [aria-current],
+[class*="Pagination"] .active {
+  background: linear-gradient(135deg, var(--sz-primary), var(--sz-secondary)) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+/* Empty activity */
+[class*="Activity"] .text-center {
+  color: var(--sz-muted) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.3.3 — Sidebar desktop-style + hide/show toggle
+   ═══════════════════════════════════════════════════ */
+
+/* Tombol hamburger */
+#sz-nav-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 70;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(8, 49, 85, 0.9);
+  border: 1px solid var(--sz-border-2);
+  color: var(--sz-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  transition: background .2s, border-color .2s, transform .15s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+#sz-nav-toggle:hover {
+  background: rgba(34,211,238,.15);
+  border-color: var(--sz-secondary);
+  color: var(--sz-secondary);
+}
+#sz-nav-toggle:active { transform: scale(.95); }
+#sz-nav-toggle svg { width: 22px; height: 22px; pointer-events: none; }
+
+/* Overlay gelap saat sidebar terbuka (mobile) */
+#sz-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(2, 14, 26, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+html.sz-nav-open #sz-nav-overlay {
+  display: block;
+  opacity: 1;
+}
+
+/* Sidebar panel (mirip desktop) */
+#sz-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  max-width: 85vw;
+  z-index: 60;
+  background: linear-gradient(180deg, rgba(3,21,37,.98) 0%, rgba(2,14,26,.99) 100%);
+  border-right: 1px solid var(--sz-border);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-105%);
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+  box-shadow: 8px 0 32px rgba(0,0,0,.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+html.sz-nav-open #sz-sidebar {
+  transform: translateX(0);
+}
+
+/* Brand di sidebar */
+#sz-sidebar .sz-sb-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--sz-border);
+  flex-shrink: 0;
+}
+#sz-sidebar .sz-sb-brand img {
+  width: 40px;
+  height: 40px;
+}
+#sz-sidebar .sz-sb-brand h2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--sz-text);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+#sz-sidebar .sz-sb-brand h2 span { color: var(--sz-secondary); }
+#sz-sidebar .sz-sb-brand small {
+  display: block;
+  font-size: 11px;
+  color: var(--sz-muted);
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+/* Close button di dalam sidebar */
+#sz-sidebar .sz-sb-close {
+  margin-left: auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(8,49,85,.7);
+  border: 1px solid var(--sz-border);
+  color: var(--sz-text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+#sz-sidebar .sz-sb-close:hover {
+  color: var(--sz-secondary);
+  border-color: var(--sz-border-2);
+}
+
+/* Nav links */
+#sz-sidebar .sz-sb-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+  -webkit-overflow-scrolling: touch;
+}
+#sz-sidebar .sz-sb-section {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--sz-muted-2);
+  font-weight: 700;
+  padding: 14px 12px 6px;
+}
+#sz-sidebar .sz-sb-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: var(--sz-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+  transition: background .15s, color .15s;
+}
+#sz-sidebar .sz-sb-link:hover {
+  background: rgba(34,211,238,.08);
+  color: var(--sz-text);
+}
+#sz-sidebar .sz-sb-link.active {
+  background: linear-gradient(90deg, rgba(34,211,238,.18), rgba(30,144,255,.08));
+  color: var(--sz-secondary);
+  box-shadow: inset 3px 0 0 var(--sz-secondary);
+}
+#sz-sidebar .sz-sb-link span.emoji {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Footer sidebar */
+#sz-sidebar .sz-sb-footer {
+  padding: 12px;
+  border-top: 1px solid var(--sz-border);
+  text-align: center;
+  flex-shrink: 0;
+}
+#sz-sidebar .sz-sb-footer img {
+  width: 64px;
+  opacity: 0.4;
+}
+
+/* Desktop: sidebar bisa tetap fixed atau toggle */
+@media (min-width: 900px) {
+  #sz-nav-toggle {
+    top: 16px;
+    left: 16px;
+  }
+  /* Opsional: di desktop default tertutup, buka via toggle */
+  #sz-sidebar {
+    width: 260px;
+  }
+}
+
+/* Saat sidebar open, body jangan scroll (mobile) */
+html.sz-nav-open {
+  overflow: hidden;
+}
+@media (min-width: 900px) {
+  html.sz-nav-open {
+    overflow: auto;
+  }
+}
+
+/* Jangan bentrok dengan bottom-nav Pterodactyl di mobile */
+@media (max-width: 768px) {
+  #sz-nav-toggle {
+    top: max(10px, env(safe-area-inset-top, 0px));
+    left: 10px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.3.4 — Performance animasi + jaga notifikasi RT
+   ═══════════════════════════════════════════════════ */
+
+/* Animasi lebih ringan: hanya transform/opacity (GPU) */
+body::before,
+body::after,
+html::before,
+html::after,
+#sz-deco img,
+.sz-fish2 {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Kurangi beban di perangkat lemah / hemat baterai */
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after, html::before, html::after,
+  #sz-deco, #sz-deco img, .sz-fish2, .sz-whale, .sz-turtle,
+  .sz-octopus, .sz-coral-l, .sz-coral-r {
+    animation: none !important;
+    transition: none !important;
+  }
+  #sz-sidebar { transition: none !important; }
+  #sz-nav-overlay { transition: none !important; }
+}
+
+/* Matikan dekorasi berat saat tab tidak terlihat (hemat CPU) */
+html.sz-hidden body::before,
+html.sz-hidden body::after,
+html.sz-hidden html::before,
+html.sz-hidden html::after,
+html.sz-hidden #sz-deco {
+  animation-play-state: paused !important;
+}
+
+/* JANGAN sentuh elemen notifikasi / WebSocket / real-time Pterodactyl */
+[class*="Notification"], [class*="notification"],
+[class*="Toast"], [class*="toast"],
+[class*="Alert"], [role="alert"],
+[class*="Websocket"], [class*="websocket"],
+[class*="Socket"], [data-notification],
+.xterm, .xterm-screen, .xterm-viewport,
+[class*="Console"] pre, [class*="Console"] .font-mono {
+  /* biarkan style panel asli untuk integritas RT */
+}
+
+/* Sidebar transition hanya transform (cepat) */
+#sz-sidebar {
+  will-change: transform;
+  transition: transform .22s cubic-bezier(.4,0,.2,1) !important;
+}
+#sz-nav-overlay {
+  transition: opacity .2s ease !important;
+}
+
+/* Hover card lebih ringan */
+.bg-gray-700.rounded:hover, .bg-gray-700.rounded-lg:hover,
+.server-card:hover {
+  transition: transform .15s ease, box-shadow .15s ease !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.4.0 — Header · Modal · Toast · Skeleton · Account
+   · Admin · Music player · Config CSS vars
+   ═══════════════════════════════════════════════════ */
+
+/* CSS variables bisa di-override dari JS (config) */
+:root {
+  --sz-primary: var(--sz-cfg-primary, #1e90ff);
+  --sz-secondary: var(--sz-cfg-secondary, #22d3ee);
+}
+
+/* ── HEADER SERVER (bar atas nama server) ── */
+header.bg-neutral-900, header.bg-gray-900,
+[class*="ServerHeader"], nav.bg-neutral-900 {
+  background: rgba(3, 21, 37, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid var(--sz-border) !important;
+}
+/* Status glow di header */
+header .bg-green-500, header .bg-emerald-500,
+[class*="ServerHeader"] .bg-green-500 {
+  box-shadow: 0 0 12px rgba(34,197,94,.55) !important;
+}
+header .bg-red-500, header .bg-red-600,
+[class*="ServerHeader"] .bg-red-500 {
+  box-shadow: 0 0 12px rgba(239,68,68,.5) !important;
+}
+header .bg-yellow-500, header .bg-amber-500 {
+  box-shadow: 0 0 12px rgba(251,191,36,.45) !important;
+}
+
+/* ── MODAL glass ── */
+.ReactModal__Overlay,
+[class*="ModalOverlay"],
+.fixed.inset-0[class*="bg-black"],
+.fixed.inset-0[class*="bg-opacity"] {
+  background: rgba(2, 14, 26, 0.78) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+.ReactModal__Content,
+[class*="Modal"] > div[class*="bg-"],
+div[role="dialog"] {
+  background: rgba(8, 49, 85, 0.92) !important;
+  border: 1px solid var(--sz-border-2) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,.55) !important;
+  color: var(--sz-text) !important;
+  backdrop-filter: blur(16px) !important;
+}
+.ReactModal__Content h1,
+.ReactModal__Content h2,
+[class*="Modal"] h1, [class*="Modal"] h2,
+div[role="dialog"] h1, div[role="dialog"] h2 {
+  color: var(--sz-text) !important;
+  font-weight: 800 !important;
+}
+.ReactModal__Content label,
+[class*="Modal"] label,
+div[role="dialog"] label {
+  color: var(--sz-text-2) !important;
+}
+
+/* ── TOAST / NOTIFIKASI (visual only) ── */
+[class*="Toast"], [class*="toast"],
+[class*="Notification"] > div,
+[role="status"],
+.fixed.top-0 .bg-neutral-700,
+.fixed.top-0 .bg-gray-700,
+.fixed.right-0 .bg-neutral-800 {
+  background: rgba(8, 49, 85, 0.95) !important;
+  border: 1px solid var(--sz-border-2) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,.45) !important;
+  color: var(--sz-text) !important;
+  backdrop-filter: blur(12px) !important;
+}
+/* Success toast */
+[class*="Toast"][class*="green"], [class*="toast"][class*="success"],
+.bg-green-500[class*="Toast"] {
+  border-color: rgba(34,197,94,.4) !important;
+  box-shadow: 0 0 20px rgba(34,197,94,.15) !important;
+}
+/* Error toast */
+[class*="Toast"][class*="red"], [class*="toast"][class*="error"] {
+  border-color: rgba(239,68,68,.4) !important;
+}
+
+/* ── SKELETON loading ── */
+@keyframes sz-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.animate-pulse, [class*="Skeleton"], [class*="skeleton"],
+.bg-neutral-700.animate-pulse, .bg-gray-700.animate-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(8,49,85,.5) 0%,
+    rgba(34,211,238,.12) 50%,
+    rgba(8,49,85,.5) 100%
+  ) !important;
+  background-size: 800px 100% !important;
+  animation: sz-shimmer 1.4s ease-in-out infinite !important;
+  border-radius: 10px !important;
+  border: none !important;
+}
+
+/* ── EMPTY STATE ilustrasi ── */
+#sz-empty-deco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+#sz-empty-deco img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+}
+
+/* ── ACCOUNT page ── */
+[class*="Account"] .bg-neutral-700,
+[class*="Account"] .bg-gray-700,
+form[action*="account"] .bg-neutral-700 {
+  background: var(--sz-glass) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: var(--sz-radius) !important;
+  padding: 18px !important;
+  margin-bottom: 14px !important;
+}
+
+/* ── ADMIN polish ── */
+.skin-blue .content-wrapper { background: transparent !important; }
+.skin-blue .small-box {
+  border-radius: 14px !important;
+  box-shadow: var(--sz-shadow) !important;
+  border: 1px solid var(--sz-border) !important;
+}
+.skin-blue .small-box h3 { color: #fff !important; font-weight: 800 !important; }
+.skin-blue table.dataTable {
+  background: var(--sz-glass) !important;
+  border-radius: 12px !important;
+  color: var(--sz-text) !important;
+}
+.skin-blue .dataTables_wrapper .dataTables_filter input {
+  background: rgba(2,14,26,.8) !important;
+  border: 1px solid var(--sz-border) !important;
+  border-radius: 10px !important;
+  color: var(--sz-text) !important;
+}
+
+/* ── MUSIC PLAYER (floating) ── */
+#sz-music {
+  position: fixed;
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  right: 14px;
+  z-index: 65;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(8, 49, 85, 0.92);
+  border: 1px solid var(--sz-border-2);
+  border-radius: 50px;
+  padding: 8px 12px 8px 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--sz-text);
+  font-size: 12px;
+  font-weight: 700;
+  max-width: 200px;
+}
+#sz-music button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--sz-primary), var(--sz-secondary));
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  box-shadow: 0 2px 10px rgba(30,144,255,.35);
+}
+#sz-music button:hover { transform: scale(1.05); }
+#sz-music .sz-music-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--sz-muted);
+  font-size: 11px;
+}
+#sz-music.sz-music-off { opacity: 0.7; }
+#sz-music.sz-music-off button {
+  background: rgba(8,49,85,.9);
+  border: 1px solid var(--sz-border);
+  box-shadow: none;
+  color: var(--sz-muted);
+}
+@media (min-width: 900px) {
+  #sz-music {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+/* Sembunyikan music control jika disabled di config */
+html[data-sz-music="off"] #sz-music { display: none !important; }
+
+/* PWA / theme-color hint via meta is JS; body safe area */
+@supports (padding: env(safe-area-inset-bottom)) {
+  #sz-music {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.4.2 — Halaman Edit Theme (in-panel)
+   ═══════════════════════════════════════════════════ */
+
+#sz-theme-page {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background:
+    radial-gradient(ellipse 900px 500px at 80% -5%, rgba(34,211,238,.12), transparent 55%),
+    linear-gradient(180deg, #052240 0%, #020e1a 100%);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 14px 100px;
+}
+html.sz-theme-open #sz-theme-page { display: block; }
+html.sz-theme-open { overflow: hidden; }
+
+#sz-theme-page .sz-tp-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(3,21,37,.9);
+  backdrop-filter: blur(12px);
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--sz-border);
+}
+#sz-theme-page .sz-tp-head h1 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--sz-text);
+  margin: 0;
+  flex: 1;
+}
+#sz-theme-page .sz-tp-head h1 span { color: var(--sz-secondary); }
+#sz-theme-page .sz-tp-close {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--sz-border);
+  background: rgba(8,49,85,.8);
+  color: var(--sz-text);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#sz-theme-page .sz-tp-card {
+  background: rgba(8,49,85,.78);
+  border: 1px solid var(--sz-border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.35);
+}
+#sz-theme-page .sz-tp-card h2 {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--sz-secondary);
+  margin: 0 0 12px;
+}
+
+#sz-theme-page .sz-tp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(34,211,238,.08);
+}
+#sz-theme-page .sz-tp-row:last-child { border-bottom: none; }
+#sz-theme-page .sz-tp-row label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sz-text);
+}
+#sz-theme-page .sz-tp-row small {
+  display: block;
+  font-size: 11px;
+  color: var(--sz-muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Toggle switch */
+#sz-theme-page .sz-switch {
+  position: relative;
+  width: 48px; height: 28px;
+  flex-shrink: 0;
+}
+#sz-theme-page .sz-switch input {
+  opacity: 0; width: 0; height: 0;
+}
+#sz-theme-page .sz-switch span {
+  position: absolute; inset: 0;
+  background: rgba(5,34,64,.9);
+  border: 1px solid var(--sz-border);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: .2s;
+}
+#sz-theme-page .sz-switch span::before {
+  content: "";
+  position: absolute;
+  width: 22px; height: 22px;
+  left: 2px; top: 2px;
+  background: var(--sz-muted);
+  border-radius: 50%;
+  transition: .2s;
+}
+#sz-theme-page .sz-switch input:checked + span {
+  background: linear-gradient(135deg, var(--sz-primary), var(--sz-secondary));
+  border-color: transparent;
+}
+#sz-theme-page .sz-switch input:checked + span::before {
+  transform: translateX(20px);
+  background: #fff;
+}
+
+#sz-theme-page input[type="text"],
+#sz-theme-page input[type="url"],
+#sz-theme-page input[type="color"],
+#sz-theme-page input[type="range"] {
+  background: rgba(2,14,26,.8);
+  border: 1px solid var(--sz-border);
+  border-radius: 10px;
+  color: var(--sz-text);
+  padding: 10px 12px;
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+}
+#sz-theme-page input[type="text"]:focus,
+#sz-theme-page input[type="url"]:focus {
+  border-color: var(--sz-secondary);
+  box-shadow: 0 0 0 3px rgba(34,211,238,.15);
+}
+#sz-theme-page input[type="color"] {
+  width: 48px; height: 36px;
+  padding: 2px;
+  cursor: pointer;
+}
+#sz-theme-page .sz-tp-colors {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#sz-theme-page .sz-tp-color-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--sz-text-2);
+  font-weight: 600;
+}
+
+#sz-theme-page .sz-tp-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+#sz-theme-page .sz-tp-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  min-height: 44px;
+}
+#sz-theme-page .sz-tp-btn-primary {
+  background: linear-gradient(135deg, var(--sz-primary), var(--sz-secondary));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(30,144,255,.3);
+}
+#sz-theme-page .sz-tp-btn-ghost {
+  background: rgba(8,49,85,.8);
+  border: 1px solid var(--sz-border);
+  color: var(--sz-text-2);
+}
+#sz-theme-page .sz-tp-note {
+  font-size: 12px;
+  color: var(--sz-muted);
+  line-height: 1.45;
+  margin-top: 10px;
+}
+#sz-theme-page .sz-tp-note code {
+  background: rgba(5,34,64,.8);
+  color: var(--sz-secondary);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+@media (min-width: 900px) {
+  #sz-theme-page {
+    padding: 28px 24px 40px;
+    display: none;
+  }
+  html.sz-theme-open #sz-theme-page {
+    display: flex;
+    justify-content: center;
+  }
+  #sz-theme-page .sz-tp-inner {
+    width: 100%;
+    max-width: 520px;
+  }
+}
