@@ -159,14 +159,17 @@ do_install() {
   [ -f "$PANEL_DIR/artisan" ] \
     || die "Pterodactyl tidak ditemukan di $PANEL_DIR (set PANEL_DIR=...)"
 
-  # ── Deteksi PHP + validasi versi minimum ──────────────
+  # ── Deteksi PHP (wajib ada) + versi (INFORMASIONAL) ───
   find_php || die "PHP tidak ditemukan di PATH umum (php, php8.1, php8.2, php8.3, /usr/bin/php). Install PHP atau set PATH terlebih dahulu."
   local PHP_VER
   PHP_VER="$("$PHP_BIN" -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION.".".PHP_RELEASE_VERSION;' 2>/dev/null || true)"
-  [ -n "$PHP_VER" ] || die "PHP ditemukan di '$PHP_BIN' tapi versinya tidak dapat dibaca (cek instalasi PHP-CLI kamu)."
-  ver_gte "$PHP_VER" "$MIN_PHP_VER" \
-    || die "PHP $PHP_VER terdeteksi, tapi butuh minimal PHP $MIN_PHP_VER. Update PHP-CLI dulu (mis. apt install php8.1)."
-  ok "PHP $PHP_VER ($PHP_BIN) terdeteksi"
+  if [ -z "$PHP_VER" ]; then
+    warn "Versi PHP tidak dapat dibaca dari '$PHP_BIN' — dilanjutkan tanpa cek versi PHP."
+  elif ! ver_gte "$PHP_VER" "$MIN_PHP_VER"; then
+    warn "PHP $PHP_VER terdeteksi (di bawah rekomendasi $MIN_PHP_VER) — tetap dilanjutkan."
+  else
+    ok "PHP $PHP_VER ($PHP_BIN) terdeteksi"
+  fi
 
   for f in "$WRAPPER" "$ADMIN"; do
     [ -f "$PANEL_DIR/$f" ] || die "File $f tidak ada — butuh Pterodactyl 1.x"
@@ -174,18 +177,17 @@ do_install() {
   done
   grep -q '</head>' "$PANEL_DIR/$WRAPPER" || die "Tag </head> tidak ditemukan di $WRAPPER"
 
-  # ── Deteksi + validasi versi panel minimum ────────────
+  # ── Deteksi versi panel (INFORMASIONAL — tidak memblokir install) ──
   local VER
-  VER="$(detect_panel_version)" \
-    || die "Versi panel tidak terdeteksi lewat '$PHP_BIN artisan p:info', config/app.php, maupun git tag. Jalankan '$PHP_BIN artisan p:info' manual untuk cek."
-  if [ "$VER" = "canary" ]; then
-    warn "Panel terdeteksi sebagai build 'canary' (branch develop, belum ditag rilis resmi) — versi angka tidak tersedia dari sistem panel itu sendiri."
-    warn "Dianggap memenuhi minimum $MIN_PANEL_VER karena canary = kode terbaru (lebih baru dari semua rilis bertag)."
-    ok "Pterodactyl canary (dev build) terdeteksi"
+  VER="$(detect_panel_version || true)"
+  if [ -z "$VER" ]; then
+    warn "Versi panel tidak terdeteksi otomatis (p:info/config/app.php/git tag semua tidak cocok) — dilanjutkan tanpa cek versi."
+    VER="tidak diketahui"
+  elif [ "$VER" = "canary" ]; then
+    warn "Panel terdeteksi sebagai build 'canary' (branch develop, belum ditag rilis resmi) — dilanjutkan."
+  elif ! ver_gte "$VER" "$MIN_PANEL_VER"; then
+    warn "Pterodactyl $VER terdeteksi (di bawah rekomendasi $MIN_PANEL_VER) — tetap dilanjutkan, tapi cek tampilan setelah install."
   else
-    [ "${VER%%.*}" = "1" ] || die "Versi $VER tidak didukung (butuh 1.x)"
-    ver_gte "$VER" "$MIN_PANEL_VER" \
-      || die "Pterodactyl $VER terdeteksi, tapi tema ini butuh minimal versi $MIN_PANEL_VER. Update panel dulu."
     ok "Pterodactyl $VER terdeteksi (memenuhi minimum $MIN_PANEL_VER)"
   fi
 
