@@ -55,6 +55,32 @@ find_php() {
 }
 PHP_BIN=""
 
+# ── Deteksi versi panel, dengan fallback berlapis ───────
+# 1) php artisan p:info (cara normal — hanya berisi angka pada rilis resmi)
+# 2) baca langsung config/app.php (menangani build 'canary'/develop)
+# 3) git describe --tags (jika panel di-install lewat git clone)
+detect_panel_version() {
+  local v raw tag
+
+  v="$(cd "$PANEL_DIR" && "$PHP_BIN" artisan p:info 2>/dev/null \
+    | grep -iE 'version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
+  if [ -n "$v" ]; then echo "$v"; return 0; fi
+
+  if [ -f "$PANEL_DIR/config/app.php" ]; then
+    raw="$(grep -oE "'version'[[:space:]]*=>[[:space:]]*'[^']*'" "$PANEL_DIR/config/app.php" \
+      | grep -oE "'[^']*'" | tail -1 | tr -d "'" || true)"
+    if [[ "$raw" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "$raw"; return 0; fi
+  fi
+
+  if [ -d "$PANEL_DIR/.git" ] && command -v git >/dev/null 2>&1; then
+    tag="$(git -C "$PANEL_DIR" describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || true)"
+    if [[ "$tag" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "$tag"; return 0; fi
+  fi
+
+  if [ "$raw" = "canary" ]; then echo "canary"; return 0; fi
+  return 1
+}
+
 log()  { printf '\033[36m[skyzz]\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m[skyzz] ⚠ PERINGATAN:\033[0m %s\n' "$*"; }
 ok()   { printf '\033[32m[skyzz] ✓\033[0m %s\n' "$*"; }
@@ -150,13 +176,18 @@ do_install() {
 
   # ── Deteksi + validasi versi panel minimum ────────────
   local VER
-  VER="$(cd "$PANEL_DIR" && "$PHP_BIN" artisan p:info 2>/dev/null \
-    | grep -i 'panel version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
-  [ -n "$VER" ] || die "Versi panel tidak terdeteksi. Jalankan '$PHP_BIN artisan p:info' manual."
-  [ "${VER%%.*}" = "1" ] || die "Versi $VER tidak didukung (butuh 1.x)"
-  ver_gte "$VER" "$MIN_PANEL_VER" \
-    || die "Pterodactyl $VER terdeteksi, tapi tema ini butuh minimal versi $MIN_PANEL_VER. Update panel dulu."
-  ok "Pterodactyl $VER terdeteksi (memenuhi minimum $MIN_PANEL_VER)"
+  VER="$(detect_panel_version)" \
+    || die "Versi panel tidak terdeteksi lewat '$PHP_BIN artisan p:info', config/app.php, maupun git tag. Jalankan '$PHP_BIN artisan p:info' manual untuk cek."
+  if [ "$VER" = "canary" ]; then
+    warn "Panel terdeteksi sebagai build 'canary' (branch develop, belum ditag rilis resmi) — versi angka tidak tersedia dari sistem panel itu sendiri."
+    warn "Dianggap memenuhi minimum $MIN_PANEL_VER karena canary = kode terbaru (lebih baru dari semua rilis bertag)."
+    ok "Pterodactyl canary (dev build) terdeteksi"
+  else
+    [ "${VER%%.*}" = "1" ] || die "Versi $VER tidak didukung (butuh 1.x)"
+    ver_gte "$VER" "$MIN_PANEL_VER" \
+      || die "Pterodactyl $VER terdeteksi, tapi tema ini butuh minimal versi $MIN_PANEL_VER. Update panel dulu."
+    ok "Pterodactyl $VER terdeteksi (memenuhi minimum $MIN_PANEL_VER)"
+  fi
 
   # ── Cek instalasi tema lama agar tidak bentrok ────────
   if [ -d "$PANEL_DIR/public/skyzz" ] || [ -d "$PANEL_DIR/resources/views/skyzz" ]; then
