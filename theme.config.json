@@ -1,0 +1,25 @@
+{
+  "theme": { "name": "SkyZz Ocean", "version": "1.4.2" },
+  "branding": {
+    "name": "SkyZzPANEL",
+    "tagline": "Your Server, Our Priority",
+    "logo": "/skyzz/logo.svg",
+    "favicon": "/skyzz/logo.svg"
+  },
+  "appearance": {
+    "primaryColor":   "#1e90ff",
+    "secondaryColor": "#22d3ee",
+    "oceanMode":      true,
+    "animations":     true,
+    "bubbles":        true,
+    "creatures":      true,
+    "welcomeBanner":  true,
+    "navHeightPx":    64
+  },
+  "music": {
+    "enabled": false,
+    "url": "",
+    "volume": 0.35,
+    "loop": true
+  }
+}
