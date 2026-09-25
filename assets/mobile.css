@@ -1,12 +1,17 @@
-/* SkyZzPANEL v1.3.0 — Mobile Layout (≤768px)
-   CSS-only: nav diposisikan jadi bottom tab bar (DOM tidak diubah). */
+/* SkyZzPANEL v1.4.3 — Mobile Layout (≤768px) */
 @media (max-width:768px){
 
-  html,body{overflow-x:hidden}
-  .container,.max-w-screen-xl,.mx-auto{padding-left:12px !important;padding-right:12px !important}
-  #sz-deco{display:none}
+  html,body{ overflow-x:hidden }
 
-  /* Top nav → bottom tab bar */
+  /* ── Padding konten utama ── */
+  .container,.max-w-screen-xl,.mx-auto{
+    padding-left:14px !important;
+    padding-right:14px !important;
+  }
+
+  #sz-deco{ display:none }
+
+  /* ── Bottom nav bar ── */
   nav.bg-gray-900,.bg-gray-900.shadow-md,header.bg-gray-900{
     position:fixed !important;left:0;right:0;top:auto !important;bottom:0 !important;
     display:flex !important;flex-direction:row !important;align-items:center !important;
@@ -18,60 +23,315 @@
     box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:60;
   }
   nav.bg-gray-900 a,.bg-gray-900.shadow-md a,header.bg-gray-900 a{
-    flex:1 1 0;display:flex !important;flex-direction:column;align-items:center;justify-content:center;
-    gap:2px;padding:6px 2px !important;font-size:11px !important;text-align:center;border-radius:10px;
-    min-height:44px;
+    flex:1 1 0;display:flex !important;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:3px;padding:6px 4px !important;font-size:10px !important;
+    text-align:center;border-radius:10px;min-height:44px;
+    color:var(--sz-muted);
   }
   nav.bg-gray-900 a.active,.bg-gray-900.shadow-md a.active,header.bg-gray-900 a.active{
-    box-shadow:none !important;background:rgba(34,211,238,.12) !important;color:var(--sz-secondary) !important;
+    box-shadow:none !important;
+    background:rgba(34,211,238,.12) !important;
+    color:var(--sz-secondary) !important;
   }
-  nav.bg-gray-900 img,.bg-gray-900.shadow-md img{display:none}
-  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px)) !important}
+  nav.bg-gray-900 img,.bg-gray-900.shadow-md img{ display:none }
+  body{ padding-bottom:calc(74px + env(safe-area-inset-bottom,0px)) !important }
 
-  /* Sub-nav server tetap di atas */
+  /* ── Sub-nav (Console|Files|DB|...) sticky atas ── */
   [class*="SubNavigation"],[class*="subnav"]{
     position:sticky !important;top:0;bottom:auto !important;z-index:40;
     overflow-x:auto !important;white-space:nowrap;-webkit-overflow-scrolling:touch;
-    background:rgba(6,39,68,.92) !important;border-bottom:1px solid var(--sz-border) !important;
+    background:rgba(6,39,68,.95) !important;
+    border-bottom:1px solid var(--sz-border) !important;
+    padding:0 4px !important;
+  }
+  [class*="SubNavigation"] a,[class*="subnav"] a{
+    padding:10px 12px !important;
+    font-size:12px !important;
   }
 
-  .grid,.flex.flex-wrap,[class*="grid-cols"]{display:flex !important;flex-direction:column !important}
-  .bg-gray-700{margin-bottom:10px;border-radius:14px !important}
-  .bg-gray-700 .flex{flex-wrap:wrap}
+  /* ── Welcome banner mobile ── */
+  #sz-welcome{
+    position:relative !important;
+    top:0 !important;
+    left:0 !important;right:0 !important;
+    margin:10px 14px 0 !important;
+    padding:12px 36px 12px 14px !important;
+    border-radius:14px !important;
+    gap:8px !important;
+    max-width:100% !important;
+  }
+  #sz-welcome h3{ font-size:13px !important; }
+  .sz-welcome-eyebrow{ font-size:11px !important; }
+  .sz-welcome-whale{ width:56px !important; }
+  .sz-welcome-close{ top:6px !important; right:8px !important; }
 
-  input,select,textarea,button,.bg-primary-500,.bg-primary-600{min-height:44px !important;font-size:15px !important}
+  html[data-skyzz-page="dashboard"][data-skyzz-welcome="on"] #app{
+    padding-top:calc(74px + env(safe-area-inset-top,0px)) !important;
+  }
+
+  /* ── Grid & Flex → column ── */
+  .grid,[class*="grid-cols"]{
+    display:flex !important;flex-direction:column !important;gap:10px !important;
+  }
+  .flex.flex-wrap{ flex-wrap:wrap !important; gap:8px !important; }
+
+  /* ── Kartu bg-gray-700 ── */
+  .bg-gray-700{
+    margin-bottom:10px !important;
+    border-radius:14px !important;
+    padding:14px !important;
+  }
+  .bg-gray-700 .flex{ flex-wrap:wrap; gap:6px; }
+
+  /* ── Input / button ukuran jari ── */
+  input,select,textarea,button,
+  .bg-primary-500,.bg-primary-600{
+    min-height:44px !important;
+    font-size:15px !important;
+  }
+  /* tapi tombol kecil (ikon) jangan dipaksa 44px penuh */
+  button.sz-welcome-close,
+  button[class*="icon"],
+  [class*="FileObjectRow"] button{
+    min-height:unset !important;
+    font-size:inherit !important;
+  }
+
+  /* ── LOGIN form ── */
   form.bg-white,form[action*="login"]{
-    width:100% !important;max-width:100% !important;margin:0 !important;border-radius:20px !important;
+    width:100% !important;max-width:100% !important;
+    margin:0 !important;border-radius:20px !important;
     padding:24px 18px !important;
   }
-  .sz-hero{display:none !important}
-  html[data-skyzz-page="auth"] body::before,html[data-skyzz-page="auth"] #sz-mobile-brand{display:block}
+  .sz-hero{ display:none !important }
+  html[data-skyzz-page="auth"] body::before,
+  html[data-skyzz-page="auth"] #sz-mobile-brand{ display:block }
 
-  #sz-mobile-brand{display:none;text-align:center;padding:28px 16px 4px}
-  #sz-mobile-brand img{width:150px;margin:0 auto 8px}
-  #sz-mobile-brand p{margin:0;color:var(--sz-muted);font-size:13px}
+  #sz-mobile-brand{ display:none;text-align:center;padding:28px 16px 4px }
+  #sz-mobile-brand img{ width:140px;margin:0 auto 8px }
+  #sz-mobile-brand p{ margin:0;color:var(--sz-muted);font-size:13px }
 
-  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
-
-  .xterm,.CodeMirror{font-size:12.5px !important}
-  .CodeMirror-gutters{min-width:34px}
-
-  .ReactModal__Content,div[class*="Modal"]>div{
-    width:94vw !important;max-width:94vw !important;border-radius:18px !important;
+  /* ── Tabel scroll horizontal ── */
+  table{
+    display:block;width:100%;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    white-space:nowrap;
   }
 
-  /* Status badge lebih kompak di mobile */
+  /* ── Terminal / Editor ── */
+  .xterm,.CodeMirror{ font-size:12.5px !important }
+  .CodeMirror-gutters{ min-width:34px }
+
+  /* ── Modal ── */
+  .ReactModal__Content,div[class*="Modal"]>div{
+    width:94vw !important;max-width:94vw !important;
+    border-radius:18px !important;
+    padding:18px 16px !important;
+  }
+
+  /* ── Status badge ── */
   .rounded-full.bg-green-500,.rounded-full.bg-red-500,
   .bg-green-500.text-xs,.bg-red-500.text-xs{
     font-size:11px !important;padding:3px 8px !important;
   }
+
+  /* ══════════════════════════════════════
+     FILE MANAGER — mobile fixes
+     ══════════════════════════════════════ */
+
+  /* Header bar (breadcrumb + tombol aksi) */
+  [class*="FileManager"] > div:first-child,
+  [class*="FileManager"] .flex.items-center.justify-between{
+    flex-wrap:wrap !important;
+    gap:8px !important;
+    padding-bottom:10px !important;
+  }
+
+  /* Tombol Upload / New File / New Dir */
+  [class*="FileManager"] button,
+  [class*="FileManager"] a[class*="button"],
+  [class*="FileManager"] .flex.gap-2 > *,
+  [class*="FileManager"] .flex.gap-3 > *{
+    flex:1 1 auto !important;
+    min-width:auto !important;
+    white-space:nowrap !important;
+    font-size:13px !important;
+    padding:8px 12px !important;
+    min-height:40px !important;
+  }
+
+  /* Baris file — susun lebih rapat tapi tetap bisa klik */
+  [class*="FileObjectRow"],[class*="file-row"]{
+    padding:10px 10px !important;
+    gap:8px !important;
+    min-height:50px !important;
+    border-radius:12px !important;
+    margin-bottom:6px !important;
+  }
+
+  /* Nama file biar ga overflow */
+  [class*="FileObjectRow"] [class*="name"],
+  [class*="FileObjectRow"] .truncate{
+    font-size:13px !important;
+    max-width:calc(100vw - 160px) !important;
+  }
+
+  /* Size / date di baris file — sembunyikan di layar kecil */
+  [class*="FileObjectRow"] [class*="size"],
+  [class*="FileObjectRow"] [class*="date"],
+  [class*="FileObjectRow"] [class*="modified"]{
+    display:none !important;
+  }
+
+  /* Tombol aksi per-file */
+  [class*="FileObjectRow"] > div:last-child{
+    gap:4px !important;
+    flex-shrink:0 !important;
+  }
+  [class*="FileObjectRow"] > div:last-child button{
+    width:32px !important;height:32px !important;
+    min-height:32px !important;
+    padding:0 !important;
+    font-size:12px !important;
+  }
+
+  /* Breadcrumb path */
+  [class*="FileManager"] .font-mono,
+  [class*="FileManager"] code{
+    font-size:11px !important;
+    max-width:calc(100vw - 100px) !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    display:inline-block !important;
+    white-space:nowrap !important;
+    vertical-align:middle !important;
+  }
+
+  /* ══════════════════════════════════════
+     DATABASES / BACKUPS / SCHEDULES
+     ══════════════════════════════════════ */
+  [class*="DatabaseRow"],[class*="BackupRow"],[class*="ScheduleRow"],
+  [class*="database-row"],[class*="backup-row"],[class*="schedule-row"]{
+    padding:12px 12px !important;
+    gap:8px !important;
+    border-radius:12px !important;
+    margin-bottom:8px !important;
+  }
+  /* Tombol aksi di baris DB/Backup */
+  [class*="DatabaseRow"] button,[class*="BackupRow"] button,
+  [class*="ScheduleRow"] button{
+    min-height:36px !important;
+    font-size:12px !important;
+    padding:6px 10px !important;
+  }
+
+  /* ══════════════════════════════════════
+     CONSOLE
+     ══════════════════════════════════════ */
+  [class*="Console"] .flex.items-center,
+  [class*="Console"] .flex.justify-between{
+    flex-wrap:wrap !important;
+    gap:8px !important;
+  }
+  /* Tombol Start/Stop/Restart */
+  [class*="Console"] button.bg-green-500,
+  [class*="Console"] button.bg-red-500,
+  [class*="Console"] button.bg-gray-500{
+    flex:1 !important;
+    min-width:80px !important;
+    font-size:13px !important;
+  }
+
+  /* ══════════════════════════════════════
+     NETWORK (Allocations)
+     ══════════════════════════════════════ */
+  [class*="AllocationRow"],
+  .bg-neutral-700.flex.items-center{
+    flex-wrap:wrap !important;
+    gap:6px !important;
+    padding:12px 12px !important;
+  }
+
+  /* ══════════════════════════════════════
+     MUSIK player
+     ══════════════════════════════════════ */
+  #sz-music{
+    bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;
+    right:10px !important;
+    padding:6px 10px 6px 8px !important;
+    font-size:11px !important;
+  }
+
+  /* ══════════════════════════════════════
+     HAMBURGER button
+     ══════════════════════════════════════ */
+  #sz-nav-toggle{
+    top:max(8px, env(safe-area-inset-top,0px)) !important;
+    left:10px !important;
+    width:38px !important;
+    height:38px !important;
+  }
+
+  /* ══════════════════════════════════════
+     STAT CARDS dashboard
+     ══════════════════════════════════════ */
+  [class*="StatBlock"],[class*="stat-block"],
+  .grid > .bg-gray-700{
+    padding:14px !important;
+  }
 }
 
+/* ── 420px dan lebih kecil ── */
 @media (max-width:420px){
-  nav.bg-gray-900 a,.bg-gray-900.shadow-md a{font-size:10px !important}
-  .box,.bg-gray-700{border-radius:12px}
+  nav.bg-gray-900 a,.bg-gray-900.shadow-md a{ font-size:9px !important; gap:2px !important; }
+  .box,.bg-gray-700{ border-radius:12px !important; }
+  #sz-welcome h3{ font-size:12px !important; }
+  .sz-welcome-whale{ display:none !important; }
 }
 
 @media (prefers-reduced-motion:reduce){
-  #sz-deco,body::before,body::after,html::before,html::after{animation:none !important}
+  #sz-deco,body::before,body::after,html::before,html::after{ animation:none !important }
+}
+
+/* ── v1.5.0 — Stat cards & server rows mobile ── */
+@media (max-width: 768px) {
+
+  /* Stat cards stack vertical, lebih compact */
+  .sz-stat-card {
+    padding: 16px 14px 64px !important;
+    border-radius: 16px !important;
+  }
+  .sz-card-icon {
+    width: 44px !important; height: 44px !important;
+    border-radius: 13px !important;
+    margin-bottom: 8px !important;
+  }
+  .sz-card-icon svg { width: 22px !important; height: 22px !important; }
+  #sz-sidebar .sz-sb-link .sz-sb-icon { width: 30px !important; height: 30px !important; }
+  #sz-sidebar .sz-sb-link .sz-sb-icon svg { width: 16px !important; height: 16px !important; }
+  .sz-stat-card h2,
+  .sz-stat-card [class*="count"] {
+    font-size: 2.4rem !important;
+  }
+  .sz-card-creature {
+    width: clamp(58px, 26%, 78px) !important;
+    bottom: 4px !important; right: 8px !important;
+  }
+  .sz-card-wave { height: 48px !important; }
+
+  /* Server row mobile */
+  .sz-server-row-enhanced {
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    margin-bottom: 8px !important;
+  }
+  .sz-server-row-enhanced:hover {
+    transform: none !important;
+  }
+
+  /* Status dot lebih besar (mudah lihat di mobile) */
+  .sz-status-glow {
+    width: 10px !important; height: 10px !important;
+  }
 }

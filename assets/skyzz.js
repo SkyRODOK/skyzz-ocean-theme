@@ -1,4 +1,4 @@
-/* SkyZzPANEL v1.4.2 — dekorasi + music + branding (aman untuk WebSocket/React) */
+/* SkyZzPANEL v1.5.0 — dekorasi + music + branding + SVG Icon System (aman untuk WebSocket/React) */
 (function () {
   if (window.__skyzzLoaded) return;
   window.__skyzzLoaded = 1;
@@ -31,6 +31,60 @@
     if (c) e.className = c;
     if (style) e.style.cssText = style;
     return e;
+  }
+
+  /* ── SkyZz Icon System — flat-outline SVG set, replaces every emoji glyph ── */
+  var ICONS = {
+    home:       '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>',
+    monitor:    '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+    console:    '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3"/><path d="M12 15h5"/>',
+    folder:     '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>',
+    folderPlus: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M12 11v5M9.5 13.5h5"/>',
+    database:   '<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5V12c0 1.66 3.58 3 8 3s8-1.34 8-3V5.5"/><path d="M4 12v6.5c0 1.66 3.58 3 8 3s8-1.34 8-3V12"/>',
+    clock:      '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+    users:      '<circle cx="9" cy="8" r="3"/><path d="M2.5 20c0-3.31 2.91-6 6.5-6s6.5 2.69 6.5 6"/><path d="M16.5 5.5a3 3 0 0 1 0 5.9"/><path d="M18.5 14.2c2.3.6 4 2.6 4 5.3"/>',
+    userPlus:   '<circle cx="9" cy="8" r="3.3"/><path d="M2.5 20c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6"/><path d="M19 8v4M17 10h4"/>',
+    account:    '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5a6 6 0 0 1 11 0"/>',
+    backup:     '<rect x="3" y="4" width="18" height="5" rx="1.2"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/>',
+    network:    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.4 4 5.6 4 9s-1.5 6.6-4 9c-2.5-2.4-4-5.6-4-9s1.5-6.6 4-9z"/>',
+    rocket:     '<path d="M12 2c3 1.5 5 5 5 9 0 2-1 4-2 5l-1 3-2-2-2 2-1-3c-1-1-2-3-2-5 0-4 2-7.5 5-9z"/><circle cx="12" cy="9" r="1.3" fill="currentColor" stroke="none"/><path d="M9 16l-2.5 1L6 20l3.5-1"/><path d="M15 16l2.5 1 .5 3-3.5-1"/>',
+    settings:   '<circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a7.9 7.9 0 0 0 0-3l2-1.4-2-3.4-2.3.7a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.5 2.9a7.7 7.7 0 0 0-2.6 1.5l-2.3-.7-2 3.4 2 1.4a7.9 7.9 0 0 0 0 3l-2 1.4 2 3.4 2.3-.7c.76.66 1.64 1.17 2.6 1.5L10 22h4l.5-2.9a7.7 7.7 0 0 0 2.6-1.5l2.3.7 2-3.4z"/>',
+    activity:   '<path d="M3 12h4l2 7 4-14 2 7h6"/>',
+    theme:      '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.3-.5-.8-.5-1.2 0-1.1.9-2 2-2h2a4 4 0 0 0 4-4c0-4.4-4-7.5-9-7.5z"/><circle cx="7.5" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="11" cy="7.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="9" r="1.1" fill="currentColor" stroke="none"/>',
+    logout:     '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+    sun:        '<circle cx="12" cy="12" r="4.3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+    moon:       '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+    sunrise:    '<path d="M12 3v4"/><path d="M5.6 8.6l1.4 1.4"/><path d="M18.4 8.6l-1.4 1.4"/><path d="M2 14h20"/><path d="M6 18a6 6 0 0 1 12 0"/><path d="M2 21h20"/>',
+    sunset:     '<path d="M12 10V6"/><path d="M5.6 9.4l1.4 1.4"/><path d="M18.4 9.4l-1.4 1.4"/><path d="M2 14h20"/><path d="M6 18a6 6 0 0 1 12 0"/><path d="M2 21h20"/>',
+    shield:     '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    gem:        '<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20"/><path d="M9 3l1.5 6L12 21l1.5-12L15 3"/>',
+    headset:    '<path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M20 19v1a3 3 0 0 1-3 3h-3"/>',
+    cpu:        '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
+    wifi:       '<path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5.5 12.3a10.2 10.2 0 0 1 13 0"/><path d="M9 16a5.5 5.5 0 0 1 6 0"/><circle cx="12" cy="19.4" r="1.1" fill="currentColor" stroke="none"/>',
+    zap:        '<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
+    alert:      '<circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16.2" r="0.9" fill="currentColor" stroke="none"/>',
+    upload:     '<path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+    filePlus:   '<path d="M13 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M13 2v6h6"/><path d="M12 12v6M9 15h6"/>',
+    play:       '<path d="M7 4l13 8-13 8z"/>',
+    refresh:    '<path d="M20 11A8 8 0 0 0 6.3 6.3L4 8.6"/><path d="M4 4v5h5"/><path d="M4 13a8 8 0 0 0 13.7 4.7L20 15.4"/><path d="M20 20v-5h-5"/>',
+    stop:       '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+    music:      '<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
+    pause:      '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+    save:       '<path d="M5 3h11l3 3v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 3v5h6V3"/><rect x="7" y="13" width="10" height="7"/>',
+    check:      '<path d="M4 12.5l5 5L20 6"/>',
+    close:      '<path d="M5 5l14 14M19 5L5 19"/>'
+  };
+  function iconSvg(name, cls) {
+    var body = ICONS[name] || '';
+    return '<svg class="sz-icon' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + body + '</svg>';
+  }
+  function iconEl(name, cls) {
+    var span = d.createElement('span');
+    span.className = 'sz-icon-wrap' + (cls ? ' ' + cls : '');
+    span.setAttribute('aria-hidden', 'true');
+    span.innerHTML = iconSvg(name);
+    return span;
   }
 
   /* ── Favicon + document title branding ── */
@@ -79,12 +133,12 @@
     hero.appendChild(el('p', 'Kelola server game kamu dengan mudah, cepat dan aman bersama kami.', 'sz-hero-desc'));
     var ul = el('ul');
     [
-      { text: 'Server Cepat & Stabil', icon: '🛡️' },
-      { text: 'Harga Terjangkau & Terbaik', icon: '💎' },
-      { text: 'Support 24/7', icon: '🎧' }
+      { text: 'Server Cepat & Stabil', icon: 'shield' },
+      { text: 'Harga Terjangkau & Terbaik', icon: 'gem' },
+      { text: 'Support 24/7', icon: 'headset' }
     ].forEach(function (item) {
       var li = el('li');
-      li.innerHTML = '<span style="font-size:18px;display:block;margin-bottom:4px">' + item.icon + '</span>' + item.text;
+      li.innerHTML = iconSvg(item.icon, 'sz-icon-feature') + item.text;
       ul.appendChild(li);
     });
     hero.appendChild(ul);
@@ -105,10 +159,10 @@
 
   function greetingByHour() {
     var hr = new Date().getHours();
-    if (hr >= 4 && hr < 11)  return { emoji: '🌅', text: 'Selamat pagi' };
-    if (hr >= 11 && hr < 15) return { emoji: '☀️', text: 'Selamat siang' };
-    if (hr >= 15 && hr < 18) return { emoji: '🌤️', text: 'Selamat sore' };
-    return { emoji: '🌙', text: 'Selamat malam' };
+    if (hr >= 4 && hr < 11)  return { icon: 'sunrise', text: 'Selamat pagi' };
+    if (hr >= 11 && hr < 15) return { icon: 'sun', text: 'Selamat siang' };
+    if (hr >= 15 && hr < 18) return { icon: 'sunset', text: 'Selamat sore' };
+    return { icon: 'moon', text: 'Selamat malam' };
   }
 
   function buildWelcome() {
@@ -116,9 +170,11 @@
     var g = greetingByHour();
     var box = el('div'); box.id = 'sz-welcome'; box.setAttribute('aria-hidden', 'true');
     var t = el('div', '', 'sz-welcome-text');
-    t.appendChild(el('p', g.emoji + ' ' + g.text + ',', 'sz-welcome-eyebrow'));
+    var eyebrow = el('p', '', 'sz-welcome-eyebrow');
+    eyebrow.innerHTML = iconSvg(g.icon, 'sz-icon-eyebrow') + g.text + ',';
+    t.appendChild(eyebrow);
     var h3 = el('h3');
-    h3.innerHTML = '<strong>' + name + '</strong> &mdash; Semoga harimu menyenangkan dan server-mu tetap stabil! 🚀';
+    h3.innerHTML = '<strong>' + name + '</strong> &mdash; Semoga harimu menyenangkan dan server-mu tetap stabil! ' + iconSvg('rocket', 'sz-icon-inline');
     t.appendChild(h3);
     box.appendChild(t);
     box.appendChild(img('whale', 'sz-welcome-whale'));
@@ -127,6 +183,23 @@
   function removeWelcome() {
     var e = d.getElementById('sz-welcome');
     if (e) e.remove();
+  }
+
+  /* Tutup welcome saat user klik × */
+  function addWelcomeClose() {
+    var box = d.getElementById('sz-welcome');
+    if (!box || box.dataset.szClose) return;
+    box.dataset.szClose = '1';
+    var btn = el('button', '', 'sz-welcome-close');
+    btn.innerHTML = iconSvg('close');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Tutup');
+    btn.addEventListener('click', function () {
+      box.style.transition = 'opacity .3s';
+      box.style.opacity = '0';
+      setTimeout(function () { box.remove(); }, 320);
+    });
+    box.appendChild(btn);
   }
 
   /* Empty state deco (whale) — only when empty message visible */
@@ -153,29 +226,161 @@
     empty.parentNode.insertBefore(wrap, empty);
   }
 
+  /* ── Stat cards: Total / Online / Offline (Image 2 style) ── */
+  var statDone = false;
+  function buildStatCards() {
+    if (statDone) return;
+    /* Pterodactyl 1.x renders stat cards as div.bg-gray-700 inside a grid on the dashboard.
+       We look for elements containing big numbers + known keywords. */
+    var cards = d.querySelectorAll(
+      '[class*="StatBlock"], [class*="stat-block"], ' +
+      '.grid > .bg-gray-700, .grid > .bg-gray-800, ' +
+      '.grid > [class*="rounded"]'
+    );
+    if (!cards.length) return;
+
+    var themes = [
+      { key: /total|all|server/i,   icon: 'cpu',  creature: 'whale',  color: '#1e90ff', glow: 'rgba(30,144,255,.35)' },
+      { key: /online|running|aktif/i, icon: 'wifi', creature: 'turtle', color: '#22d3ee', glow: 'rgba(34,211,238,.35)' },
+      { key: /offline|stopped|mati/i, icon: 'zap',  creature: 'fish',   color: '#f97316', glow: 'rgba(249,115,22,.35)'  }
+    ];
+
+    var matched = 0;
+    cards.forEach(function(card) {
+      if (card.dataset.szStatDone) return;
+      var txt = (card.textContent || '').toLowerCase();
+      var theme = null;
+      for (var i = 0; i < themes.length; i++) {
+        if (themes[i].key.test(txt)) { theme = themes[i]; break; }
+      }
+      if (!theme) return;
+
+      card.dataset.szStatDone = '1';
+      card.classList.add('sz-stat-card');
+      card.setAttribute('data-sz-color', theme.color);
+      card.setAttribute('data-sz-glow', theme.glow);
+      card.style.setProperty('--sz-card-color', theme.color);
+      card.style.setProperty('--sz-card-glow', theme.glow);
+
+      /* Wave SVG di bawah card */
+      if (!card.querySelector('.sz-card-wave')) {
+        var wave = d.createElement('div');
+        wave.className = 'sz-card-wave';
+        wave.setAttribute('aria-hidden', 'true');
+        wave.innerHTML =
+          '<svg viewBox="0 0 400 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">' +
+          '<path d="M0,30 C80,0 160,60 240,30 C320,0 360,40 400,30 L400,60 L0,60 Z" fill="currentColor"/>' +
+          '</svg>';
+        card.appendChild(wave);
+      }
+
+      /* Creature image */
+      if (!card.querySelector('.sz-card-creature')) {
+        var cr = img(theme.creature, 'sz-card-creature');
+        card.appendChild(cr);
+      }
+
+      /* Icon badge */
+      if (!card.querySelector('.sz-card-icon')) {
+        var ib = el('div', '', 'sz-card-icon');
+        ib.innerHTML = iconSvg(theme.icon);
+        card.insertBefore(ib, card.firstChild);
+      }
+
+      matched++;
+    });
+
+    if (matched > 0) statDone = true;
+  }
+
+  /* ── Server row enhancer (Image 1 style) ── */
+  function enhanceServerRows() {
+    var rows = d.querySelectorAll(
+      '[class*="ServerRow"]:not([data-sz-row]), ' +
+      '[class*="ServerEntry"]:not([data-sz-row]), ' +
+      'div[class*="server-row"]:not([data-sz-row]), ' +
+      '.bg-gray-700.rounded:not([data-sz-row]), ' +
+      '.bg-gray-700.rounded-lg:not([data-sz-row])'
+    );
+    rows.forEach(function(row) {
+      /* Only rows that look like server cards (have a link or server-name-ish text) */
+      if (!row.querySelector('a[href*="/server/"]') && !row.closest('a[href*="/server/"]')) return;
+      if (row.dataset.szRow) return;
+      row.dataset.szRow = '1';
+      row.classList.add('sz-server-row-enhanced');
+
+      /* Shimmer bar across top */
+      if (!row.querySelector('.sz-row-shimmer')) {
+        var sh = d.createElement('div');
+        sh.className = 'sz-row-shimmer';
+        sh.setAttribute('aria-hidden', 'true');
+        row.insertBefore(sh, row.firstChild);
+      }
+
+      /* Glow dot for status */
+      var statusEl = row.querySelector(
+        '[class*="Online"], [class*="online"], [class*="Offline"], [class*="offline"], ' +
+        '.bg-green-500, .bg-red-500, .bg-yellow-500'
+      );
+      if (statusEl && !statusEl.dataset.szGlow) {
+        statusEl.dataset.szGlow = '1';
+        statusEl.classList.add('sz-status-glow');
+      }
+    });
+  }
+
+  /* ── Entrance animations: fade-slide-up on first paint ── */
+  var entranceDone = false;
+  function runEntrance() {
+    if (entranceDone) return;
+    var targets = d.querySelectorAll(
+      '.bg-gray-700, .bg-gray-800, [class*="ServerRow"], [class*="ServerEntry"], ' +
+      '.sz-stat-card, #sz-welcome'
+    );
+    var delay = 0;
+    targets.forEach(function(el) {
+      if (el.dataset.szEntrance) return;
+      el.dataset.szEntrance = '1';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(18px)';
+      el.style.transition = 'opacity .45s ease ' + delay + 'ms, transform .45s ease ' + delay + 'ms';
+      setTimeout(function() {
+        el.style.opacity = '';
+        el.style.transform = '';
+        setTimeout(function() {
+          el.style.transition = '';
+          el.style.opacity = '';
+          el.style.transform = '';
+        }, 500);
+      }, delay + 30);
+      delay = Math.min(delay + 40, 320);
+    });
+    if (targets.length) entranceDone = true;
+  }
+
   var emojiMap = [
-    { match: /no databases/i, emoji: '🗄️ ' },
-    { match: /no backups/i, emoji: '💾 ' },
-    { match: /no schedules/i, emoji: '⏰ ' },
-    { match: /don.?t have any subusers/i, emoji: '👥 ' },
-    { match: /no subusers/i, emoji: '👥 ' },
-    { match: /marked as offline/i, emoji: '🔴 ' },
-    { match: /server starting/i, emoji: '🚀 ' },
-    { match: /no allocations/i, emoji: '🌐 ' },
-    { match: /no activity/i, emoji: '📋 ' },
-    { match: /no events/i, emoji: '📋 ' }
+    { match: /no databases/i, icon: 'database' },
+    { match: /no backups/i, icon: 'backup' },
+    { match: /no schedules/i, icon: 'clock' },
+    { match: /don.?t have any subusers/i, icon: 'users' },
+    { match: /no subusers/i, icon: 'users' },
+    { match: /marked as offline/i, icon: 'alert' },
+    { match: /server starting/i, icon: 'rocket' },
+    { match: /no allocations/i, icon: 'network' },
+    { match: /no activity/i, icon: 'activity' },
+    { match: /no events/i, icon: 'activity' }
   ];
   var btnEmoji = [
-    { match: /^new database$/i, emoji: '🗄️ ' },
-    { match: /^create backup$/i, emoji: '💾 ' },
-    { match: /^create schedule$/i, emoji: '⏰ ' },
-    { match: /^new user$/i, emoji: '👤 ' },
-    { match: /^upload$/i, emoji: '⬆ ' },
-    { match: /^new file$/i, emoji: '📄 ' },
-    { match: /^create directory$/i, emoji: '📁 ' },
-    { match: /^start$/i, emoji: '▶ ' },
-    { match: /^restart$/i, emoji: '↻ ' },
-    { match: /^stop$/i, emoji: '⏹ ' }
+    { match: /^new database$/i, icon: 'database' },
+    { match: /^create backup$/i, icon: 'backup' },
+    { match: /^create schedule$/i, icon: 'clock' },
+    { match: /^new user$/i, icon: 'userPlus' },
+    { match: /^upload$/i, icon: 'upload' },
+    { match: /^new file$/i, icon: 'filePlus' },
+    { match: /^create directory$/i, icon: 'folderPlus' },
+    { match: /^start$/i, icon: 'play' },
+    { match: /^restart$/i, icon: 'refresh' },
+    { match: /^stop$/i, icon: 'stop' }
   ];
 
   function decorateEmojis() {
@@ -187,8 +392,8 @@
       var t = (p.textContent || '').trim();
       if (t.length < 8 || t.length > 120) continue;
       for (var j = 0; j < emojiMap.length; j++) {
-        if (emojiMap[j].match.test(t) && t.indexOf(emojiMap[j].emoji.trim()) === -1) {
-          p.textContent = emojiMap[j].emoji + t;
+        if (emojiMap[j].match.test(t)) {
+          p.insertBefore(iconEl(emojiMap[j].icon, 'sz-icon-inline'), p.firstChild);
           p.dataset.szEmoji = '1';
           break;
         }
@@ -202,14 +407,8 @@
       var bt = (b.textContent || '').trim();
       if (!bt || bt.length > 30) continue;
       for (var m = 0; m < btnEmoji.length; m++) {
-        if (btnEmoji[m].match.test(bt) && bt.indexOf(btnEmoji[m].emoji.trim()) === -1) {
-          if (b.children.length === 0) b.textContent = btnEmoji[m].emoji + bt;
-          else {
-            var span = d.createElement('span');
-            span.textContent = btnEmoji[m].emoji;
-            span.setAttribute('aria-hidden', 'true');
-            b.insertBefore(span, b.firstChild);
-          }
+        if (btnEmoji[m].match.test(bt)) {
+          b.insertBefore(iconEl(btnEmoji[m].icon, 'sz-icon-inline'), b.firstChild);
           b.dataset.szEmoji = '1';
           break;
         }
@@ -243,35 +442,35 @@
     sb.appendChild(brand);
 
     var nav = el('div', '', 'sz-sb-nav');
-    function link(href, emoji, label, section) {
+    function link(href, iconKey, label, section) {
       if (section) nav.appendChild(el('div', section, 'sz-sb-section'));
       var a = el('a', '', 'sz-sb-link'); a.href = href;
-      a.innerHTML = '<span class="emoji">' + emoji + '</span>' + label;
+      a.innerHTML = '<span class="sz-sb-icon">' + iconSvg(iconKey) + '</span><span class="sz-sb-label">' + label + '</span>';
       nav.appendChild(a); return a;
     }
-    link('/', '🏠', 'Dashboard', 'Menu Utama');
-    link('#', '🖥️', 'Servers');
+    link('/', 'home', 'Dashboard', 'Menu Utama');
+    link('#', 'monitor', 'Servers');
     var sp = location.pathname.match(/^\/server\/([^/]+)/);
     if (sp) {
       var base = '/server/' + sp[1];
-      link(base, '⌨️', 'Console', 'Server');
-      link(base + '/files', '📁', 'Files');
-      link(base + '/databases', '🗄️', 'Databases');
-      link(base + '/schedules', '⏰', 'Schedules');
-      link(base + '/users', '👥', 'Users');
-      link(base + '/backups', '💾', 'Backups');
-      link(base + '/network', '🌐', 'Network');
-      link(base + '/startup', '🚀', 'Startup');
-      link(base + '/settings', '⚙️', 'Settings');
-      link(base + '/activity', '📋', 'Activity');
+      link(base, 'console', 'Console', 'Server');
+      link(base + '/files', 'folder', 'Files');
+      link(base + '/databases', 'database', 'Databases');
+      link(base + '/schedules', 'clock', 'Schedules');
+      link(base + '/users', 'users', 'Users');
+      link(base + '/backups', 'backup', 'Backups');
+      link(base + '/network', 'network', 'Network');
+      link(base + '/startup', 'rocket', 'Startup');
+      link(base + '/settings', 'settings', 'Settings');
+      link(base + '/activity', 'activity', 'Activity');
     }
-    link('/account', '👤', 'Account', 'Lainnya');
-    var themeLink = link('#sz-theme', '🎨', 'Edit Theme');
+    link('/account', 'account', 'Account', 'Lainnya');
+    var themeLink = link('#sz-theme', 'theme', 'Edit Theme');
     themeLink.addEventListener('click', function (e) {
       e.preventDefault();
       if (window.__szOpenTheme) window.__szOpenTheme();
     });
-    link('/auth/logout', '🚪', 'Logout');
+    link('/auth/logout', 'logout', 'Logout');
     sb.appendChild(nav);
     var foot = el('div', '', 'sz-sb-footer'); foot.appendChild(img('coral', '')); sb.appendChild(foot);
     d.body.appendChild(sb);
@@ -329,7 +528,7 @@
     d.body.appendChild(audio);
 
     var box = el('div'); box.id = 'sz-music'; box.className = 'sz-music-off';
-    var playBtn = el('button'); playBtn.type = 'button'; playBtn.textContent = '♪';
+    var playBtn = el('button'); playBtn.type = 'button'; playBtn.innerHTML = iconSvg('music');
     playBtn.setAttribute('aria-label', 'Toggle music');
     var label = el('span', 'Music off', 'sz-music-label');
     box.appendChild(playBtn);
@@ -340,7 +539,7 @@
     function setUI(on) {
       playing = on;
       box.className = on ? '' : 'sz-music-off';
-      playBtn.textContent = on ? '⏸' : '♪';
+      playBtn.innerHTML = on ? iconSvg('pause') : iconSvg('music');
       label.textContent = on ? 'Music on' : 'Music off';
       try { localStorage.setItem('sz-music', on ? '1' : '0'); } catch (e) {}
     }
@@ -357,7 +556,7 @@
     /* Restore preference (never autoplay without user gesture on mobile) */
     try {
       if (localStorage.getItem('sz-music') === '1') {
-        label.textContent = 'Tap ♪';
+        label.textContent = 'Tap to play';
       }
     } catch (e) {}
     /* Pause when tab hidden */
@@ -410,7 +609,8 @@
     var title = el('h1');
     title.innerHTML = 'Edit <span>Theme</span>';
     head.appendChild(title);
-    var close = el('button', '✕', 'sz-tp-close');
+    var close = el('button', '', 'sz-tp-close');
+    close.innerHTML = iconSvg('close');
     close.type = 'button';
     close.setAttribute('aria-label', 'Tutup');
     head.appendChild(close);
@@ -475,7 +675,7 @@
 
     /* Musik */
     var c3 = card('Musik (browser ini)');
-    c3.appendChild(row('Aktifkan kontrol musik', 'Tombol ♪ kanan bawah', toggle('sz-p-music', prefs.musicEnabled === true)));
+    c3.appendChild(row('Aktifkan kontrol musik', 'Tombol musik di kanan bawah', toggle('sz-p-music', prefs.musicEnabled === true)));
     var urlInp = d.createElement('input');
     urlInp.type = 'url';
     urlInp.id = 'sz-p-music-url';
@@ -499,7 +699,8 @@
     /* Actions */
     var c4 = card('Simpan');
     var actions = el('div', '', 'sz-tp-actions');
-    var saveBtn = el('button', '💾 Simpan', 'sz-tp-btn sz-tp-btn-primary');
+    var saveBtn = el('button', '', 'sz-tp-btn sz-tp-btn-primary');
+    saveBtn.innerHTML = iconSvg('save', 'sz-icon-inline') + 'Simpan';
     saveBtn.type = 'button';
     var resetBtn = el('button', 'Reset default', 'sz-tp-btn sz-tp-btn-ghost');
     resetBtn.type = 'button';
@@ -565,11 +766,12 @@
           if (box2) box2.style.display = 'none';
         }
       } catch (err) {}
-      saveBtn.textContent = '✓ Tersimpan';
-      setTimeout(function () { saveBtn.textContent = '💾 Simpan'; }, 1500);
+      saveBtn.innerHTML = iconSvg('check', 'sz-icon-inline') + 'Tersimpan';
+      setTimeout(function () { saveBtn.innerHTML = iconSvg('save', 'sz-icon-inline') + 'Simpan'; }, 1500);
       if (h.getAttribute('data-skyzz-page') === 'dashboard' && next.welcome !== false) {
         removeWelcome();
         buildWelcome();
+        addWelcomeClose();
       } else if (next.welcome === false) removeWelcome();
     });
 
@@ -596,10 +798,19 @@
     else if (/^\/account/.test(p)) k = 'account';
 
     if (k !== last) { last = k; h.setAttribute('data-skyzz-page', k); }
-    if (k === 'dashboard' && h.getAttribute('data-skyzz-welcome') === 'on') buildWelcome();
-    else removeWelcome();
+    if (k === 'dashboard' && h.getAttribute('data-skyzz-welcome') === 'on') {
+      buildWelcome();
+      addWelcomeClose();
+    } else if (k !== 'dashboard') {
+      removeWelcome();
+    }
     decorateEmojis();
     emptyDeco();
+    if (k === 'dashboard') {
+      setTimeout(buildStatCards, 400);
+      setTimeout(runEntrance, 500);
+    }
+    enhanceServerRows();
   }
 
   function onVisibility() {

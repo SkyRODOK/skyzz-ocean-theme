@@ -295,6 +295,22 @@ input[type="search"], input[placeholder*="Search"], input[placeholder*="Cari"] {
   overflow: hidden;
 }
 
+/* ── GLOBAL SPACING FIX: grid & flex jangan rapet ── */
+.grid { gap: 16px !important; }
+.grid-cols-1 > *, .grid-cols-2 > *, .grid-cols-3 > *, .grid-cols-4 > *,
+[class*="grid-cols"] > * { margin-bottom: 0 !important; }
+
+/* Kartu utama jangan nempel satu sama lain */
+.bg-gray-700 + .bg-gray-700,
+.bg-gray-700 + div,
+div + .bg-gray-700 { margin-top: 12px; }
+
+/* Padding dalam kartu lebih konsisten */
+.bg-gray-700 { padding: 16px !important; }
+.bg-gray-700.p-4, .bg-gray-700.p-5, .bg-gray-700.p-6 {
+  padding: inherit !important;
+}
+
 /* Garis warna atas kartu — semua kartu */
 .bg-gray-700::before {
   content: "";
@@ -489,6 +505,12 @@ div[class*="ServerEntry"]:hover, div[class*="server-entry"]:hover {
 [class*="FileObjectRow"], [class*="file-row"] {
   border-radius: 10px !important;
   transition: background .15s !important;
+  padding: 10px 12px !important;
+  margin-bottom: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 48px !important;
 }
 [class*="FileObjectRow"]:hover, [class*="file-row"]:hover,
 a[href*="/files/"]:hover {
@@ -497,6 +519,35 @@ a[href*="/files/"]:hover {
 [class*="FileObjectRow"] [class*="icon"],
 [class*="file-row"] [class*="icon"] {
   color: var(--sz-secondary) !important;
+  flex-shrink: 0 !important;
+}
+
+/* Nama file jangan terpotong */
+[class*="FileObjectRow"] [class*="name"],
+[class*="FileObjectRow"] .truncate,
+[class*="file-row"] .truncate {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* Tombol aksi file (edit, delete, dll) - jangan berdempet */
+[class*="FileObjectRow"] > div:last-child,
+[class*="file-row"] > div:last-child {
+  display: flex !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Header file manager (breadcrumb + tombol) */
+[class*="FileManager"] > div:first-child,
+[class*="FileManager"] .flex.items-center.justify-between {
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  padding-bottom: 12px !important;
+  margin-bottom: 4px !important;
 }
 
 /* Upload / New Folder tombol */
@@ -506,6 +557,28 @@ a[href*="/files/"]:hover {
   border-radius: 12px !important;
   color: #021525 !important;
   font-weight: 700 !important;
+}
+
+/* Action bar atas file manager */
+[class*="FileManager"] [class*="ActionBar"],
+[class*="FileManager"] .flex.gap-2,
+[class*="FileManager"] .flex.gap-3 {
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+/* Kontainer file list */
+[class*="FileManager"] [class*="ListBody"],
+[class*="FileManager"] > div > div {
+  padding: 0 !important;
+}
+
+/* Checkbox di file list */
+[class*="FileObjectRow"] input[type="checkbox"] {
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -704,11 +777,11 @@ html[data-skyzz-ocean="off"]     #sz-deco { display: none; }
   position: fixed; left: 0; right: 0; top: var(--sz-nav-h);
   z-index: 5;
   max-width: 1200px; margin: 14px auto 0;
-  padding: 18px 28px;
+  padding: 16px 20px 16px 24px;
   border-radius: var(--sz-radius-lg); overflow: hidden;
   background: linear-gradient(120deg, rgba(30,144,255,.42), rgba(34,211,238,.24), rgba(168,85,247,.18));
   border: 1px solid var(--sz-border-2);
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
   box-shadow: 0 14px 40px rgba(0,0,0,.35), 0 0 60px rgba(34,211,238,.08);
   backdrop-filter: blur(10px);
 }
@@ -718,11 +791,32 @@ html[data-skyzz-ocean="off"]     #sz-deco { display: none; }
   opacity: .08; pointer-events: none;
 }
 .sz-welcome-eyebrow { margin: 0 0 4px; color: var(--sz-secondary); font-size: 13px; font-weight: 800; letter-spacing: .5px; }
-#sz-welcome h3      { margin: 0; font-size: 18px; font-weight: 800; color: var(--sz-text); max-width: 560px; }
-.sz-welcome-whale   { width: 110px; flex-shrink: 0; opacity: 1; filter: drop-shadow(0 4px 12px rgba(0,0,0,.30)); }
+#sz-welcome h3      { margin: 0; font-size: 17px; font-weight: 800; color: var(--sz-text); max-width: 560px; line-height: 1.4; }
+.sz-welcome-whale   { width: 100px; flex-shrink: 0; opacity: 1; filter: drop-shadow(0 4px 12px rgba(0,0,0,.30)); }
+
+/* Tombol tutup welcome */
+.sz-welcome-close {
+  position: absolute; top: 8px; right: 10px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.20);
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.70);
+  font-size: 16px; line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  z-index: 2;
+  transition: background .15s, color .15s;
+}
+.sz-welcome-close:hover {
+  background: rgba(239,68,68,.55);
+  color: #fff;
+  border-color: transparent;
+}
 
 html[data-skyzz-page="dashboard"][data-skyzz-welcome="on"] #app {
-  padding-top: calc(var(--sz-nav-h) + 86px);
+  padding-top: calc(var(--sz-nav-h) + 90px);
 }
 
 @media (max-width: 768px) {
@@ -1807,12 +1901,34 @@ html.sz-nav-open #sz-sidebar {
   color: var(--sz-secondary);
   box-shadow: inset 3px 0 0 var(--sz-secondary);
 }
-#sz-sidebar .sz-sb-link span.emoji {
-  font-size: 18px;
-  width: 24px;
-  text-align: center;
+/* Sidebar icon badge — see full SVG ICON SYSTEM block at end of file for .sz-icon rules */
+#sz-sidebar .sz-sb-link .sz-sb-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
   flex-shrink: 0;
+  border-radius: 10px;
+  background: rgba(34,211,238,.08);
+  border: 1px solid rgba(34,211,238,.14);
+  color: var(--sz-muted);
+  transition: background .18s, border-color .18s, color .18s, transform .18s, box-shadow .18s;
 }
+#sz-sidebar .sz-sb-link .sz-sb-icon svg { width: 17px; height: 17px; }
+#sz-sidebar .sz-sb-link:hover .sz-sb-icon {
+  background: rgba(34,211,238,.16);
+  border-color: rgba(34,211,238,.30);
+  color: var(--sz-secondary);
+  transform: scale(1.08);
+}
+#sz-sidebar .sz-sb-link.active .sz-sb-icon {
+  background: linear-gradient(135deg, var(--sz-primary), var(--sz-secondary));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(34,211,238,.14), 0 4px 14px rgba(34,211,238,.35);
+  animation: sz-pulse-glow 2.6s ease-in-out infinite;
+}
+#sz-sidebar .sz-sb-link .sz-sb-label { flex: 1; }
 
 /* Footer sidebar */
 #sz-sidebar .sz-sb-footer {
@@ -2361,4 +2477,350 @@ html.sz-theme-open { overflow: hidden; }
     width: 100%;
     max-width: 520px;
   }
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.5.0 — STAT CARDS (Image 2 style) + SERVER ROWS (Image 1) + ANIMASI
+   ═══════════════════════════════════════════════════ */
+
+/* ── Keyframes baru ── */
+@keyframes sz-card-in    { from { opacity:0; transform:translateY(20px) scale(.97); } to { opacity:1; transform:none; } }
+@keyframes sz-creature-in{ from { opacity:0; transform:translateX(20px) scale(.85); } to { opacity:1; transform:none; } }
+@keyframes sz-icon-pop   { 0%{transform:scale(.6);opacity:0} 70%{transform:scale(1.12)} 100%{transform:scale(1);opacity:1} }
+@keyframes sz-wave-drift { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes sz-glow-pulse { 0%,100%{box-shadow:0 0 0 0 var(--sz-card-glow,rgba(34,211,238,.0))} 50%{box-shadow:0 0 0 6px var(--sz-card-glow,rgba(34,211,238,.15))} }
+@keyframes sz-shimmer-run{ 0%{left:-100%} 100%{left:200%} }
+@keyframes sz-dot-ping   { 0%{transform:scale(1);opacity:1} 75%,100%{transform:scale(2.2);opacity:0} }
+@keyframes sz-count-in   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+@keyframes sz-row-in     { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:none} }
+
+/* ────────────────────────────────────────────────
+   STAT CARD BASE
+   ──────────────────────────────────────────────── */
+.sz-stat-card {
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  padding: 20px 18px 70px !important;          /* bottom space for wave+creature */
+  background: linear-gradient(
+    145deg,
+    rgba(8,49,85,.92) 0%,
+    rgba(3,21,37,.96) 100%
+  ) !important;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+  transition: transform .22s ease, box-shadow .22s ease !important;
+  animation: sz-card-in .5s cubic-bezier(.22,1,.36,1) both;
+}
+.sz-stat-card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  box-shadow:
+    0 20px 48px rgba(0,0,0,.50),
+    0 0 0 1px var(--sz-card-color, var(--sz-secondary)),
+    0 0 32px var(--sz-card-glow, rgba(34,211,238,.20)) !important;
+}
+
+/* Accent bar top */
+.sz-stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--sz-card-color, var(--sz-secondary)), transparent 80%);
+  border-radius: 20px 20px 0 0;
+  opacity: .9;
+}
+
+/* Icon badge */
+.sz-card-icon {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--sz-card-color, var(--sz-secondary)) 0%, rgba(255,255,255,.06) 100%);
+  color: #fff;
+  box-shadow: 0 4px 18px var(--sz-card-glow, rgba(34,211,238,.3));
+  margin-bottom: 12px;
+  animation: sz-icon-pop .55s cubic-bezier(.22,1,.36,1) .15s both;
+  position: relative; z-index: 2;
+}
+.sz-card-icon svg { width: 26px; height: 26px; }
+
+/* Big number */
+.sz-stat-card h2,
+.sz-stat-card [class*="count"],
+.sz-stat-card > div > p:first-of-type {
+  font-size: 3rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #fff !important;
+  letter-spacing: -2px !important;
+  animation: sz-count-in .4s ease .25s both;
+  position: relative; z-index: 2;
+}
+
+/* Sub-label */
+.sz-stat-card p,
+.sz-stat-card span:not(.sz-card-icon) {
+  color: rgba(200,230,255,.65) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  position: relative; z-index: 2;
+}
+
+/* Wave at bottom */
+.sz-card-wave {
+  position: absolute;
+  bottom: 0; left: -1px; right: -1px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 1;
+  color: var(--sz-card-color, #22d3ee);
+  opacity: .18;
+}
+.sz-card-wave svg {
+  width: 200%; height: 100%;
+  animation: sz-wave-drift 6s linear infinite;
+  display: block;
+}
+
+/* Creature */
+.sz-card-creature {
+  position: absolute !important;
+  bottom: 6px; right: 10px;
+  width: clamp(70px, 30%, 95px) !important;
+  height: auto;
+  z-index: 3;
+  pointer-events: none;
+  animation: sz-creature-in .6s cubic-bezier(.22,1,.36,1) .3s both, sz-float 8s ease-in-out 1s infinite;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,.35)) !important;
+  opacity: .92 !important;
+}
+
+/* ────────────────────────────────────────────────
+   SERVER ROW — Image 1 style
+   ──────────────────────────────────────────────── */
+.sz-server-row-enhanced {
+  position: relative !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(34,211,238,.14) !important;
+  background: linear-gradient(135deg,
+    rgba(8,49,85,.80) 0%,
+    rgba(3,21,37,.90) 100%) !important;
+  padding: 16px 18px !important;
+  margin-bottom: 10px !important;
+  overflow: hidden !important;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease !important;
+  animation: sz-row-in .45s cubic-bezier(.22,1,.36,1) both;
+}
+.sz-server-row-enhanced:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(34,211,238,.38) !important;
+  box-shadow:
+    0 12px 36px rgba(0,0,0,.45),
+    0 0 24px rgba(34,211,238,.10) !important;
+}
+
+/* Shimmer accent line */
+.sz-row-shimmer {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--sz-secondary) 50%,
+    transparent 100%);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.sz-server-row-enhanced:hover .sz-row-shimmer { opacity: .7; }
+
+/* Moving shimmer effect on hover */
+.sz-row-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; height: 100%; width: 60%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  animation: sz-shimmer-run 1.8s linear infinite;
+}
+
+/* Status glow dot */
+.sz-status-glow {
+  position: relative;
+}
+.sz-status-glow::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: inherit;
+  opacity: .5;
+  animation: sz-dot-ping 1.8s ease-out infinite;
+}
+
+/* Progress bars in server rows */
+.sz-server-row-enhanced [class*="progress"] > *,
+.sz-server-row-enhanced .h-2 > div,
+.sz-server-row-enhanced .h-1\.5 > div {
+  transition: width .8s cubic-bezier(.22,1,.36,1) !important;
+}
+
+/* ────────────────────────────────────────────────
+   ANIMASI UMUM — elemen yang sebelumnya statis
+   ──────────────────────────────────────────────── */
+
+/* Kartu biasa (bukan stat card) */
+.bg-gray-700:not(.sz-stat-card):not([data-sz-row]) {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+}
+.bg-gray-700:not(.sz-stat-card):not([data-sz-row]):hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.40), 0 0 16px rgba(34,211,238,.07) !important;
+}
+
+/* Tombol — ripple feel */
+button:not(:disabled):active { transform: scale(.96) !important; transition: transform .08s !important; }
+
+/* Nav links — slide glow */
+nav a, .sz-sb-link {
+  position: relative;
+  overflow: hidden;
+}
+nav a::after, .sz-sb-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%; right: 50%;
+  height: 2px;
+  background: var(--sz-secondary);
+  transition: left .2s ease, right .2s ease;
+  border-radius: 2px;
+}
+nav a:hover::after, .sz-sb-link:hover::after {
+  left: 10%; right: 10%;
+}
+nav a.active::after, .sz-sb-link.active::after {
+  left: 0; right: 0;
+}
+
+/* Sub nav active tab underline */
+[class*="SubNavigation"] a.active::after,
+.overflow-x-auto a[class*="border-cyan"]::after,
+.overflow-x-auto a[class*="text-cyan"]::after {
+  left: 0 !important; right: 0 !important;
+}
+
+/* Input focus animation */
+input:focus, select:focus, textarea:focus {
+  transform: translateY(-1px);
+}
+
+/* Modal open animation */
+.ReactModal__Content,
+div[role="dialog"] {
+  animation: sz-card-in .3s cubic-bezier(.22,1,.36,1) both !important;
+}
+
+/* Toast / notification pop */
+[class*="Toast"], [class*="toast"], [role="status"] {
+  animation: sz-icon-pop .3s cubic-bezier(.22,1,.36,1) both !important;
+}
+
+/* Sidebar links stagger */
+#sz-sidebar .sz-sb-link:nth-child(1)  { animation-delay: .04s; }
+#sz-sidebar .sz-sb-link:nth-child(2)  { animation-delay: .08s; }
+#sz-sidebar .sz-sb-link:nth-child(3)  { animation-delay: .12s; }
+#sz-sidebar .sz-sb-link:nth-child(4)  { animation-delay: .16s; }
+#sz-sidebar .sz-sb-link:nth-child(5)  { animation-delay: .20s; }
+#sz-sidebar .sz-sb-link:nth-child(6)  { animation-delay: .24s; }
+#sz-sidebar .sz-sb-link:nth-child(7)  { animation-delay: .28s; }
+#sz-sidebar .sz-sb-link:nth-child(8)  { animation-delay: .32s; }
+#sz-sidebar .sz-sb-link               { animation: sz-row-in .35s cubic-bezier(.22,1,.36,1) both; opacity:0; }
+html.sz-nav-open #sz-sidebar .sz-sb-link { opacity: 1; }
+
+/* File row entrance */
+[class*="FileObjectRow"], [class*="file-row"] {
+  animation: sz-row-in .3s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* ═══════════════════════════════════════════════════
+   v1.5.0 — SVG ICON SYSTEM (replaces every emoji glyph)
+   ═══════════════════════════════════════════════════ */
+
+/* Base icon: crisp outline, inherits color from parent */
+.sz-icon {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: -3px;
+  overflow: visible;
+}
+
+/* Small icon inserted before button/empty-state text */
+.sz-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 7px;
+  vertical-align: -2px;
+  color: var(--sz-secondary);
+}
+.sz-icon-wrap .sz-icon,
+.sz-icon-inline { width: 15px; height: 15px; vertical-align: -2px; margin-right: 6px; color: var(--sz-secondary); }
+
+/* Hero feature list icon */
+.sz-icon-feature {
+  width: 20px; height: 20px;
+  display: block; margin-bottom: 6px;
+  color: var(--sz-secondary);
+  filter: drop-shadow(0 0 8px rgba(34,211,238,.35));
+}
+
+/* Welcome-banner greeting icon */
+.sz-icon-eyebrow { width: 15px; height: 15px; margin-right: 6px; vertical-align: -2px; color: var(--sz-secondary); }
+
+/* Empty-state icons get a soft glow + gentle float, like the deco creatures */
+#sz-empty-deco ~ p .sz-icon-wrap,
+[class*="empty"] .sz-icon-wrap {
+  color: var(--sz-secondary);
+  filter: drop-shadow(0 0 6px rgba(34,211,238,.3));
+}
+
+/* Icon-only round buttons (welcome close / theme close) */
+.sz-welcome-close .sz-icon,
+#sz-theme-page .sz-tp-close .sz-icon,
+#sz-music button .sz-icon { width: 15px; height: 15px; vertical-align: middle; margin: 0; }
+#sz-theme-page .sz-tp-close .sz-icon { width: 17px; height: 17px; }
+#sz-music button .sz-icon { width: 16px; height: 16px; }
+
+/* Theme-panel action buttons — icon + label, centered */
+#sz-theme-page .sz-tp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+#sz-theme-page .sz-tp-btn .sz-icon { width: 16px; height: 16px; margin: 0; }
+
+/* Subtle "keren" hover pop for any standalone icon badge */
+.sz-card-icon:hover,
+#sz-sidebar .sz-sb-link .sz-sb-icon:hover {
+  filter: brightness(1.08);
+}
+
+@keyframes sz-icon-spin-once { from { transform: rotate(-25deg) scale(.6); opacity: 0; } to { transform: rotate(0) scale(1); opacity: 1; } }
+.sz-icon-wrap, .sz-icon-feature, .sz-icon-eyebrow {
+  animation: sz-icon-spin-once .35s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* ── Reduced motion override ── */
+@media (prefers-reduced-motion: reduce) {
+  .sz-stat-card, .sz-card-creature, .sz-card-icon,
+  .sz-server-row-enhanced, .sz-row-shimmer::after,
+  .sz-status-glow::after, [class*="FileObjectRow"],
+  .sz-sb-link, .ReactModal__Content, div[role="dialog"],
+  [class*="Toast"], #sz-sidebar .sz-sb-link .sz-sb-icon,
+  .sz-icon-wrap, .sz-icon-feature, .sz-icon-eyebrow {
+    animation: none !important;
+    transition: none !important;
+  }
+  .sz-card-wave svg { animation: none !important; }
 }
