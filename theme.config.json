@@ -1,5 +1,5 @@
 {
-  "theme": { "name": "SkyZz Ocean", "version": "1.4.2" },
+  "theme": { "name": "SkyZz Ocean", "version": "1.4.2", "min_panel_version": "1.15.1", "min_php_version": "8.1" },
   "branding": {
     "name": "SkyZzPANEL",
     "tagline": "Your Server, Our Priority",

@@ -29,6 +29,32 @@ ADMIN="resources/views/layouts/admin.blade.php"
 INCLUDE="@include('skyzz.head')"
 STARTED=0; TMP_DIR=""; THEME_DIR=""
 
+# ── Versi minimum yang didukung ─────────────────────────
+MIN_PANEL_VER="1.15.1"
+MIN_PHP_VER="8.1"
+
+# Bandingkan versi semver: return 0 jika $1 >= $2
+ver_gte() {
+  [ "$1" = "$2" ] && return 0
+  local higher
+  higher="$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -1)"
+  [ "$higher" = "$1" ]
+}
+
+# Cari binary PHP yang valid (kadang tidak ada di PATH sebagai "php")
+find_php() {
+  local candidates=(php php8.3 php8.2 php8.1 /usr/bin/php /usr/local/bin/php)
+  local c
+  for c in "${candidates[@]}"; do
+    if command -v "$c" >/dev/null 2>&1; then
+      PHP_BIN="$c"
+      return 0
+    fi
+  done
+  return 1
+}
+PHP_BIN=""
+
 log()  { printf '\033[36m[skyzz]\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m[skyzz] ⚠ PERINGATAN:\033[0m %s\n' "$*"; }
 ok()   { printf '\033[32m[skyzz] ✓\033[0m %s\n' "$*"; }
@@ -70,7 +96,7 @@ locate_theme() {
 }
 
 cfg() {
-  php -r '
+  "$PHP_BIN" -r '
     $c = json_decode(file_get_contents($argv[1]), true);
     $v = $c;
     foreach (explode(".", $argv[2]) as $k) { $v = $v[$k] ?? null; }
@@ -86,7 +112,8 @@ rollback() {
       [ -f "$BK_ORIG/$f" ] && cp -a "$BK_ORIG/$f" "$PANEL_DIR/$f"
     done
     rm -rf "$PANEL_DIR/public/skyzz" "$PANEL_DIR/resources/views/skyzz"
-    (cd "$PANEL_DIR" && php artisan view:clear >/dev/null 2>&1) || true
+    (cd "$PANEL_DIR" && "$PHP_BIN" artisan view:clear >/dev/null 2>&1) || true
+    (cd "$PANEL_DIR" && "$PHP_BIN" artisan config:clear >/dev/null 2>&1) || true
   fi
   exit 1
 }
@@ -105,7 +132,15 @@ do_install() {
 
   [ -f "$PANEL_DIR/artisan" ] \
     || die "Pterodactyl tidak ditemukan di $PANEL_DIR (set PANEL_DIR=...)"
-  command -v php >/dev/null || die "PHP tidak ditemukan."
+
+  # ── Deteksi PHP + validasi versi minimum ──────────────
+  find_php || die "PHP tidak ditemukan di PATH umum (php, php8.1, php8.2, php8.3, /usr/bin/php). Install PHP atau set PATH terlebih dahulu."
+  local PHP_VER
+  PHP_VER="$("$PHP_BIN" -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION.".".PHP_RELEASE_VERSION;' 2>/dev/null || true)"
+  [ -n "$PHP_VER" ] || die "PHP ditemukan di '$PHP_BIN' tapi versinya tidak dapat dibaca (cek instalasi PHP-CLI kamu)."
+  ver_gte "$PHP_VER" "$MIN_PHP_VER" \
+    || die "PHP $PHP_VER terdeteksi, tapi butuh minimal PHP $MIN_PHP_VER. Update PHP-CLI dulu (mis. apt install php8.1)."
+  ok "PHP $PHP_VER ($PHP_BIN) terdeteksi"
 
   for f in "$WRAPPER" "$ADMIN"; do
     [ -f "$PANEL_DIR/$f" ] || die "File $f tidak ada — butuh Pterodactyl 1.x"
@@ -113,12 +148,21 @@ do_install() {
   done
   grep -q '</head>' "$PANEL_DIR/$WRAPPER" || die "Tag </head> tidak ditemukan di $WRAPPER"
 
+  # ── Deteksi + validasi versi panel minimum ────────────
   local VER
-  VER="$(cd "$PANEL_DIR" && php artisan p:info 2>/dev/null \
+  VER="$(cd "$PANEL_DIR" && "$PHP_BIN" artisan p:info 2>/dev/null \
     | grep -i 'panel version' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
-  [ -n "$VER" ] || die "Versi panel tidak terdeteksi. Jalankan 'php artisan p:info' manual."
+  [ -n "$VER" ] || die "Versi panel tidak terdeteksi. Jalankan '$PHP_BIN artisan p:info' manual."
   [ "${VER%%.*}" = "1" ] || die "Versi $VER tidak didukung (butuh 1.x)"
-  ok "Pterodactyl $VER terdeteksi"
+  ver_gte "$VER" "$MIN_PANEL_VER" \
+    || die "Pterodactyl $VER terdeteksi, tapi tema ini butuh minimal versi $MIN_PANEL_VER. Update panel dulu."
+  ok "Pterodactyl $VER terdeteksi (memenuhi minimum $MIN_PANEL_VER)"
+
+  # ── Cek instalasi tema lama agar tidak bentrok ────────
+  if [ -d "$PANEL_DIR/public/skyzz" ] || [ -d "$PANEL_DIR/resources/views/skyzz" ]; then
+    warn "Terdeteksi instalasi SkyZzPANEL Ocean sebelumnya — akan dibersihkan lalu dipasang ulang agar tidak bentrok."
+    rm -rf "$PANEL_DIR/public/skyzz" "$PANEL_DIR/resources/views/skyzz"
+  fi
 
   if [ -d "$PANEL_DIR/.blueprint" ]; then
     warn "Blueprint terdeteksi — periksa tampilan setelah install."
@@ -155,7 +199,7 @@ do_install() {
     warn "music.url harus http(s):// — diabaikan."
     MUSIC_URL=""
   fi
-  BRAND="$(php -r '
+  BRAND="$("$PHP_BIN" -r '
     $music = [
       "enabled" => in_array(strtolower((string)$argv[5]), ["on","true","1","yes"], true),
       "url" => (string)$argv[6],
@@ -247,15 +291,20 @@ BLADE
     "$PANEL_DIR/public/skyzz" \
     "$PANEL_DIR/resources/views/skyzz"
 
-  # Clear view cache
-  (cd "$PANEL_DIR" && php artisan view:clear >/dev/null)
+  # Simpan penanda versi tema yang terpasang (dipakai uninstall agar tidak bentrok)
+  echo "1.4.2|$VER|$(date +%s)" > "$PANEL_DIR/storage/skyzz-backup/installed-version"
+
+  # Clear cache — penting jika sebelumnya ada tema/versi lain agar tidak bentrok
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan view:clear >/dev/null)
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan config:clear >/dev/null 2>&1) || true
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan cache:clear >/dev/null 2>&1) || true
 
   # Verifikasi
   grep -qF "$INCLUDE"                    "$PANEL_DIR/$WRAPPER" || die "Verifikasi gagal: include tidak terpasang di $WRAPPER"
   grep -qF "$INCLUDE"                    "$PANEL_DIR/$ADMIN"   || die "Verifikasi gagal: include tidak terpasang di $ADMIN"
   [ -s "$PANEL_DIR/public/skyzz/ocean.css" ]                   || die "Verifikasi gagal: ocean.css kosong"
   [ -s "$PANEL_DIR/public/skyzz/skyzz.js" ]                    || die "Verifikasi gagal: skyzz.js kosong"
-  (cd "$PANEL_DIR" && php artisan --version >/dev/null)
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan --version >/dev/null)
 
   trap - ERR
   local DOMAIN_HINT
@@ -284,22 +333,53 @@ BLADE
 # ─── UNINSTALL ──────────────────────────────────────────
 do_uninstall() {
   [ -f "$PANEL_DIR/artisan" ] || die "Pterodactyl tidak ditemukan di $PANEL_DIR"
+  find_php || die "PHP tidak ditemukan di PATH umum (php, php8.1, php8.2, php8.3, /usr/bin/php). Install PHP atau set PATH terlebih dahulu."
 
   read -r -p "Hapus tema dari $PANEL_DIR? Backup akan disimpan. [y/n] " yn
   [[ "$yn" =~ ^[Yy] ]] || { log "Dibatalkan."; exit 0; }
 
+  # 1) Pulihkan file asli dari backup jika ada
   for f in "$WRAPPER" "$ADMIN"; do
+    [ -f "$PANEL_DIR/$f" ] || continue
     if [ -f "$BK_ORIG/$f" ]; then
       cp -a "$BK_ORIG/$f" "$PANEL_DIR/$f"
-      ok "Dipulihkan: $f"
+      ok "Dipulihkan dari backup: $f"
     else
-      sed -i "\\#$INCLUDE#d" "$PANEL_DIR/$f"
-      ok "Include dihapus dari: $f"
+      cp -a "$PANEL_DIR/$f" "$PANEL_DIR/$f.skyzz-bak.$(date +%s)" 2>/dev/null || true
+      ok "Backup tidak ditemukan untuk $f — file disalin ke *.skyzz-bak sebelum dibersihkan"
     fi
   done
 
+  # 2) Bersihkan SEMUA jejak include — termasuk dari versi tema sebelumnya yang
+  #    mungkin memakai baris include berbeda, supaya tidak bentrok saat pasang ulang.
+  for f in "$WRAPPER" "$ADMIN"; do
+    [ -f "$PANEL_DIR/$f" ] || continue
+    # Hapus baris include current + pola umum tema skyzz versi lama (skyzz.head / skyzz/*.css)
+    sed -i -E "/@include\(['\"]skyzz\.head['\"]\)/d; /\/skyzz\/(ocean|mobile|vars)\.css/d; /\/skyzz\/skyzz\.js/d" \
+      "$PANEL_DIR/$f" 2>/dev/null || true
+  done
+
+  # 3) Hapus semua asset & view tema (versi berapa pun)
   rm -rf "$PANEL_DIR/public/skyzz" "$PANEL_DIR/resources/views/skyzz"
-  (cd "$PANEL_DIR" && php artisan view:clear >/dev/null)
+  rm -f  "$BK_ROOT/installed-version"
+
+  # 4) Clear semua cache Laravel agar tidak ada view lama ter-cache (sumber "bentrok")
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan view:clear   >/dev/null)
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan config:clear >/dev/null 2>&1) || true
+  (cd "$PANEL_DIR" && "$PHP_BIN" artisan cache:clear  >/dev/null 2>&1) || true
+
+  # 5) Verifikasi bersih
+  local LEFTOVER=0
+  for f in "$WRAPPER" "$ADMIN"; do
+    [ -f "$PANEL_DIR/$f" ] || continue
+    grep -q "skyzz" "$PANEL_DIR/$f" 2>/dev/null && LEFTOVER=1
+  done
+  [ -d "$PANEL_DIR/public/skyzz" ] && LEFTOVER=1
+  if [ "$LEFTOVER" = 1 ]; then
+    warn "Masih ada sisa referensi 'skyzz' — cek manual di $WRAPPER / $ADMIN."
+  else
+    ok "Verifikasi bersih: tidak ada sisa referensi tema."
+  fi
 
   echo ""
   ok "Tema dihapus. Server, user, database, dan file server tidak disentuh."
