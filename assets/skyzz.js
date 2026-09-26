@@ -1,4 +1,4 @@
-/* SkyZzPANEL v1.5.0 — dekorasi + music + branding + SVG Icon System (aman untuk WebSocket/React) */
+/* SkyZzPANEL v2.1.0 — dekorasi + music + branding + SVG Icon System (aman untuk WebSocket/React) */
 (function () {
   if (window.__skyzzLoaded) return;
   window.__skyzzLoaded = 1;
@@ -167,6 +167,7 @@
 
   function buildWelcome() {
     if (d.getElementById('sz-welcome') || !d.body) return;
+    if (h.getAttribute('data-skyzz-welcome') === 'off') return;
     var g = greetingByHour();
     var box = el('div'); box.id = 'sz-welcome'; box.setAttribute('aria-hidden', 'true');
     var t = el('div', '', 'sz-welcome-text');
@@ -179,6 +180,13 @@
     box.appendChild(t);
     box.appendChild(img('whale', 'sz-welcome-whale'));
     d.body.appendChild(box);
+    /* auto-hide setelah 6.5 detik */
+    setTimeout(function () {
+      if (box.parentNode && !box.classList.contains('sz-welcome-out')) {
+        box.classList.add('sz-welcome-out');
+        setTimeout(function () { if (box.parentNode) box.remove(); }, 420);
+      }
+    }, 6500);
   }
   function removeWelcome() {
     var e = d.getElementById('sz-welcome');
@@ -195,9 +203,8 @@
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Tutup');
     btn.addEventListener('click', function () {
-      box.style.transition = 'opacity .3s';
-      box.style.opacity = '0';
-      setTimeout(function () { box.remove(); }, 320);
+      box.classList.add('sz-welcome-out');
+      setTimeout(function () { if (box.parentNode) box.remove(); }, 420);
     });
     box.appendChild(btn);
   }
@@ -786,6 +793,68 @@
   }
 
 
+  
+  /* ── Section headers + filter + grid (v2.1) ── */
+  function injectLayoutStructure() {
+    if (d.getElementById('sz-section-servers')) return;
+    var gridParent = null;
+    var cards = d.querySelectorAll('.sz-server-row-enhanced, [data-sz-row="1"], [class*="ServerRow"], [class*="ServerEntry"]');
+    if (!cards.length) {
+      // fallback: bg-gray-700 yang bukan stat
+      cards = d.querySelectorAll('.grid > .bg-gray-700:not(.sz-stat-card), .bg-gray-700.rounded, .bg-gray-700.rounded-lg');
+    }
+    if (!cards.length) return;
+    gridParent = cards[0].parentElement;
+    if (!gridParent) return;
+
+    if (!gridParent.classList.contains('sz-server-grid')) {
+      gridParent.classList.add('sz-server-grid');
+    }
+
+    // Section title
+    var head = el('div');
+    head.id = 'sz-section-servers';
+    head.className = 'sz-section-title';
+    head.innerHTML = '<div><h2>My Servers</h2><p>Kelola dan monitor server kamu</p></div>';
+    gridParent.parentNode.insertBefore(head, gridParent);
+
+    // Filter chips
+    var chips = el('div', '', 'sz-filter-chips');
+    chips.innerHTML =
+      '<div class="sz-chip active" data-filter="all"><span class="sz-chip-dot"></span>All</div>' +
+      '<div class="sz-chip" data-filter="online"><span class="sz-chip-dot" style="color:#4ade80"></span>Online</div>' +
+      '<div class="sz-chip" data-filter="offline"><span class="sz-chip-dot" style="color:#f87171"></span>Offline</div>';
+    gridParent.parentNode.insertBefore(chips, gridParent);
+
+    chips.addEventListener('click', function (e) {
+      var chip = e.target.closest('.sz-chip');
+      if (!chip) return;
+      var filter = chip.getAttribute('data-filter');
+      chips.querySelectorAll('.sz-chip').forEach(function (c) { c.classList.remove('active'); });
+      chip.classList.add('active');
+      gridParent.querySelectorAll('.sz-server-row-enhanced, [data-sz-row], [class*="ServerRow"], [class*="ServerEntry"], .bg-gray-700').forEach(function (card) {
+        if (card.classList.contains('sz-stat-card')) return;
+        var isOnline = /online|running|aktif/i.test(card.textContent || '');
+        if (filter === 'all') card.style.display = '';
+        else if (filter === 'online') card.style.display = isOnline ? '' : 'none';
+        else card.style.display = isOnline ? 'none' : '';
+      });
+    });
+  }
+
+  /* Tag bottom static panels for animation */
+  function tagBottomPanels() {
+    var candidates = d.querySelectorAll('.bg-gray-700, [class*="card"]');
+    candidates.forEach(function (el) {
+      if (el.classList.contains('sz-stat-card') || el.dataset.szRow || el.classList.contains('sz-server-row-enhanced')) return;
+      var txt = (el.textContent || '').toLowerCase();
+      if (/protect|security|autoorder|tool|service|analytics/i.test(txt)) {
+        el.classList.add('sz-bottom-panel');
+        if (/protect|security/i.test(txt)) el.classList.add('sz-security-card');
+      }
+    });
+  }
+
   var last = '';
   function page() {
     var p = location.pathname, k = 'other';
@@ -809,6 +878,8 @@
     if (k === 'dashboard') {
       setTimeout(buildStatCards, 400);
       setTimeout(runEntrance, 500);
+      setTimeout(injectLayoutStructure, 650);
+      setTimeout(tagBottomPanels, 700);
     }
     enhanceServerRows();
   }

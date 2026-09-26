@@ -299,7 +299,7 @@
 
   /* Stat cards stack vertical, lebih compact */
   .sz-stat-card {
-    padding: 16px 14px 64px !important;
+    padding: 14px 14px 52px !important;
     border-radius: 16px !important;
   }
   .sz-card-icon {
@@ -312,7 +312,7 @@
   #sz-sidebar .sz-sb-link .sz-sb-icon svg { width: 16px !important; height: 16px !important; }
   .sz-stat-card h2,
   .sz-stat-card [class*="count"] {
-    font-size: 2.4rem !important;
+    font-size: 1.45rem !important;
   }
   .sz-card-creature {
     width: clamp(58px, 26%, 78px) !important;
@@ -333,5 +333,41 @@
   /* Status dot lebih besar (mudah lihat di mobile) */
   .sz-status-glow {
     width: 10px !important; height: 10px !important;
+  }
+}
+
+
+/* ── v2.1.0 mobile layout extras ── */
+@media (max-width: 768px) {
+  .sz-stats-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .sz-server-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .sz-tools-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .sz-security-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .sz-filter-chips { gap: 6px !important; }
+  .sz-chip { padding: 5px 11px !important; font-size: 11px !important; }
+  .sz-section-title h2 { font-size: 1rem !important; }
+  #sz-welcome {
+    animation: sz-slide-in-right .5s cubic-bezier(.22,1,.36,1) both !important;
+  }
+}
+@media (max-width: 420px) {
+  .sz-tools-grid { grid-template-columns: 1fr !important; }
+  .sz-stat-card h2, .sz-stat-card [class*="count"] {
+    font-size: 1.3rem !important;
   }
 }

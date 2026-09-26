@@ -2502,7 +2502,7 @@ html.sz-theme-open { overflow: hidden; }
   overflow: hidden !important;
   border-radius: 20px !important;
   border: 1px solid rgba(255,255,255,.10) !important;
-  padding: 20px 18px 70px !important;          /* bottom space for wave+creature */
+  padding: 16px 16px 58px !important;          /* compact + space for wave+creature */
   background: linear-gradient(
     145deg,
     rgba(8,49,85,.92) 0%,
@@ -2550,11 +2550,11 @@ html.sz-theme-open { overflow: hidden; }
 .sz-stat-card h2,
 .sz-stat-card [class*="count"],
 .sz-stat-card > div > p:first-of-type {
-  font-size: 3rem !important;
-  font-weight: 900 !important;
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
   line-height: 1 !important;
   color: #fff !important;
-  letter-spacing: -2px !important;
+  letter-spacing: -0.6px !important;
   animation: sz-count-in .4s ease .25s both;
   position: relative; z-index: 2;
 }
@@ -2823,4 +2823,176 @@ html.sz-nav-open #sz-sidebar .sz-sb-link { opacity: 1; }
     transition: none !important;
   }
   .sz-card-wave svg { animation: none !important; }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   v2.1.0 — LAYOUT REDESIGN + BOTTOM PANEL ANIMATIONS
+   ═══════════════════════════════════════════════════ */
+
+/* Welcome slide from right */
+@keyframes sz-slide-in-right {
+  from { opacity: 0; transform: translateX(80px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes sz-fade-out-up {
+  to { opacity: 0; transform: translateY(-12px) scale(.97); }
+}
+#sz-welcome {
+  animation: sz-slide-in-right .55s cubic-bezier(.22,1,.36,1) both !important;
+}
+#sz-welcome.sz-welcome-out {
+  animation: sz-fade-out-up .4s ease forwards !important;
+}
+
+/* Stats grid */
+.sz-stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 14px !important;
+  margin-bottom: 24px !important;
+}
+
+/* Server grid (compact cards) */
+.sz-server-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+/* Section title */
+.sz-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 0 2px;
+}
+.sz-section-title h2 {
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+  color: var(--sz-text) !important;
+  margin: 0 !important;
+}
+.sz-section-title p {
+  font-size: 12px !important;
+  color: var(--sz-muted) !important;
+  margin: 2px 0 0 !important;
+}
+
+/* Filter chips */
+.sz-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.sz-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--sz-border);
+  background: rgba(8,49,85,.55);
+  color: var(--sz-muted);
+  cursor: pointer;
+  transition: all .18s ease;
+  user-select: none;
+}
+.sz-chip:hover {
+  border-color: var(--sz-border-2);
+  color: var(--sz-text);
+}
+.sz-chip.active {
+  background: rgba(34,211,238,.15);
+  border-color: rgba(34,211,238,.4);
+  color: var(--sz-secondary);
+  box-shadow: 0 0 12px rgba(34,211,238,.15);
+}
+.sz-chip-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ── Bottom static panels (Tools / Security / extra cards) ── */
+@keyframes sz-panel-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes sz-panel-glow {
+  0%, 100% { box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(34,211,238,0); }
+  50%      { box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 20px 2px rgba(34,211,238,.12); }
+}
+
+.sz-tools-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+  gap: 12px !important;
+  margin-bottom: 24px !important;
+}
+.sz-tool-card,
+.sz-bottom-panel {
+  border-radius: 14px !important;
+  border: 1px solid var(--sz-border) !important;
+  background: var(--sz-glass-2) !important;
+  padding: 16px !important;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease !important;
+  animation: sz-panel-rise .5s cubic-bezier(.22,1,.36,1) both;
+  backdrop-filter: blur(8px);
+}
+.sz-tool-card:nth-child(1) { animation-delay: .05s; }
+.sz-tool-card:nth-child(2) { animation-delay: .1s; }
+.sz-tool-card:nth-child(3) { animation-delay: .15s; }
+.sz-tool-card:nth-child(4) { animation-delay: .2s; }
+.sz-tool-card:hover,
+.sz-bottom-panel:hover {
+  transform: translateY(-3px) !important;
+  border-color: var(--sz-border-2) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.4), var(--sz-glow) !important;
+}
+
+.sz-security-card {
+  border-radius: 16px !important;
+  border: 1px solid rgba(34,197,94,.28) !important;
+  background: linear-gradient(135deg, rgba(8,49,85,.85), rgba(6,40,30,.35)) !important;
+  padding: 18px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  margin-bottom: 20px !important;
+  animation: sz-panel-rise .55s cubic-bezier(.22,1,.36,1) .15s both;
+  transition: transform .2s, box-shadow .2s !important;
+}
+.sz-security-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.4), 0 0 20px rgba(34,197,94,.15) !important;
+}
+
+/* Soft pulse for bottom static panels on dashboard */
+html[data-skyzz-page="dashboard"] .sz-bottom-panel,
+html[data-skyzz-page="dashboard"] .sz-security-card {
+  animation: sz-panel-rise .5s cubic-bezier(.22,1,.36,1) both, sz-panel-glow 4s ease-in-out 1s infinite;
+}
+
+@media (max-width: 768px) {
+  .sz-stats-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+  .sz-server-grid { grid-template-columns: 1fr !important; }
+  .sz-tools-grid { grid-template-columns: 1fr 1fr !important; }
+  .sz-stat-card h2,
+  .sz-stat-card [class*="count"],
+  .sz-stat-card > div > p:first-of-type {
+    font-size: 1.45rem !important;
+  }
+}
+@media (max-width: 420px) {
+  .sz-tools-grid { grid-template-columns: 1fr !important; }
+  .sz-stat-card h2,
+  .sz-stat-card [class*="count"] {
+    font-size: 1.35rem !important;
+  }
 }
